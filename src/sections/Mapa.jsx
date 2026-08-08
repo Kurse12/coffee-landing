@@ -79,8 +79,11 @@ export default function Mapa({ activo, onSelect }) {
         <Camara coords={local.coords} />
       </MapContainer>
 
+      {/* Alcanza con z-10 sobre el mapa: sus 400 quedan encerrados por el
+          isolate del .leaflet-container. Un z-[401] aca volveria a escaparse del
+          contenedor y a taparle la barra, que es lo que se arreglo. */}
       {tilesRotos && (
-        <p className="absolute inset-x-4 bottom-4 z-[401] flex items-start gap-2 rounded-card border border-hairline bg-void/90 p-4 text-xs leading-relaxed text-ink-soft backdrop-blur">
+        <p className="absolute inset-x-4 bottom-4 z-10 flex items-start gap-2 rounded-card border border-hairline bg-void/90 p-4 text-xs leading-relaxed text-ink-soft backdrop-blur">
           <WarningCircle size={16} className="mt-px shrink-0 text-accent-soft" />
           No se pudo cargar el mapa. Las direcciones de los tres locales están en la lista
           de al lado.

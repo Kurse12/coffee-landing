@@ -10,9 +10,34 @@
     <meta name="theme-color" content="#0b0b0c" />
     <meta
       name="description"
-      content="Cafeteria de especialidad en Buenos Aires. Tostado propio, cookies del dia y tres locales entre Palermo y Recoleta."
+      content="Cafetería de especialidad en Buenos Aires. Tostado propio, cookies del día y tres locales entre Palermo y Recoleta."
     />
-    <title>Cafeteria | Cafe de especialidad en Buenos Aires</title>
+    <title>Cafetería | Café de especialidad en Buenos Aires</title>
+
+    <!-- La pagina se entrega como link suelto por WhatsApp, asi que la primera
+         impresion no es el hero: es la tarjeta de preview del chat. Sin estas
+         tags el link llega pelado y se abre bastante menos. -->
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="es_AR" />
+    <meta property="og:title" content="Cafetería | Café de especialidad en Buenos Aires" />
+    <meta
+      property="og:description"
+      content="Tostado propio, cookies del día y tres locales entre Palermo y Recoleta."
+    />
+    <!-- URL absoluta, y sale de VITE_SITE_URL (ver .env). Los scrapers leen este
+         HTML desde su propio servidor, sin contexto de dominio: con la ruta
+         relativa no pueden resolver la imagen y el link llega pelado, que es
+         justo lo que estas tags vienen a evitar. -->
+    <meta property="og:url" content="%VITE_SITE_URL%/" />
+    <meta property="og:image" content="%VITE_SITE_URL%/og-cafeteria.jpg" />
+    <meta property="og:image:type" content="image/jpeg" />
+    <meta property="og:image:width" content="2400" />
+    <meta property="og:image:height" content="1260" />
+    <meta
+      property="og:image:alt"
+      content="Taza de flat white sobre fondo de café oscuro, con el título Café tostado acá nomás"
+    />
+    <meta name="twitter:card" content="summary_large_image" />
   </head>
   <body>
     <div id="root"></div>

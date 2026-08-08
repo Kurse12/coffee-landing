@@ -52,7 +52,10 @@ export default function Voces() {
                 <p className="font-display text-lg uppercase leading-none tracking-tight">
                   {v.nombre}
                 </p>
-                <p className="mt-1.5 text-xs uppercase tracking-[0.16em] text-ink-faint">
+                {/* El rol es lo que le da peso al testimonio: quien lo dice
+                    importa tanto como lo que dice. Iba en ink-faint, que no
+                    llega a ratio legible. */}
+                <p className="mt-1.5 text-xs uppercase tracking-[0.16em] text-ink-soft">
                   {v.rol}
                 </p>
               </footer>

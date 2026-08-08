@@ -1,7 +1,9 @@
 import { useEffect, useRef } from 'react'
 import { useReducedMotion } from 'motion/react'
+import { WhatsappLogo } from '@phosphor-icons/react'
 import Button from '../components/Button'
-import FondoSilk from '../components/FondoSilk'
+import { useDemo } from '../lib/demo'
+import FondoCrema from '../components/FondoCrema'
 import { gsap } from '../lib/gsap'
 import { MEDIA } from '../lib/media'
 import { scrollToId } from '../lib/useSmoothScroll'
@@ -30,6 +32,7 @@ import { scrollToId } from '../lib/useSmoothScroll'
 export default function Hero() {
   const root = useRef(null)
   const reduce = useReducedMotion()
+  const { abrir } = useDemo()
 
   useEffect(() => {
     if (reduce) return
@@ -84,7 +87,7 @@ export default function Hero() {
       ref={root}
       className="relative flex min-h-[100dvh] items-center overflow-hidden pt-20 pb-14 lg:pt-24 lg:pb-16"
     >
-      <FondoSilk />
+      <FondoCrema />
 
       {/*
         Capa de textura tipografica, el equivalente propio a las garabateadas de
@@ -108,12 +111,21 @@ export default function Hero() {
 
       <div className="relative mx-auto grid w-full max-w-[1400px] grid-cols-1 items-center gap-8 px-5 lg:grid-cols-[1.05fr_1fr] lg:gap-12 lg:px-10">
         <div className="relative order-1 flex justify-center lg:order-none">
-          {/* Foco detras del recorte. Ahora que el fondo es casi negro vuelve a
-              subir: es lo que despega la taza del fondo y evita que el recorte
-              se lea como pegado encima. */}
+          {/* Foco detras del recorte: es lo que despega la taza del fondo y
+              evita que se lea como pegada encima. Va en crema y no en el
+              acento, que es lo que llevaba cuando el fondo era rojo: sobre los
+              marrones del shader un halo rojo se lee sucio, y ademas gastaria
+              el acento en algo que no es una accion.
+
+              La opacidad baja de 22 a 12 en el mismo movimiento, y no es gusto:
+              el halo se pinta ENCIMA del velo de legibilidad, asi que el velo
+              no lo atenua, y con 800 px de ancho mas 120 de blur invade la
+              columna del titular. La crema tiene casi el doble de luminancia
+              que el rojo que llevaba antes, asi que a igual opacidad el titular
+              rojo caia debajo de 3:1. Medido, no estimado. */}
           <div
             aria-hidden
-            className="hero-halo pointer-events-none absolute top-1/2 left-1/2 aspect-square w-[min(125%,800px)] -translate-x-1/2 -translate-y-1/2 rounded-full bg-accent/24 blur-[120px]"
+            className="hero-halo pointer-events-none absolute top-1/2 left-1/2 aspect-square w-[min(125%,800px)] -translate-x-1/2 -translate-y-1/2 rounded-full bg-crema/12 blur-[120px]"
           />
 
           {/*
@@ -163,16 +175,21 @@ export default function Hero() {
             </span>
           </h1>
 
+          {/*
+            Una sola accion dominante, y que sea la que la pagina quiere que
+            pase. Antes habia dos CTA del mismo peso ("Ver la carta" y "Donde
+            estamos") y ninguno era el objetivo: los dos navegaban a otra
+            seccion, asi que el primer viewport no ofrecia nada que cerrara
+            nada. Reservar es lo unico que convierte, y ahora esta arriba de
+            todo en vez de a trece pantallas de scroll.
+          */}
           <div className="mt-8 flex flex-wrap items-center justify-center gap-3 lg:mt-10 lg:justify-start">
-            <Button className="hero-cta" onClick={() => scrollToId('carta')}>
-              Ver la carta
+            <Button className="hero-cta" onClick={() => abrir('whatsapp')}>
+              <WhatsappLogo size={18} weight="fill" />
+              Reservar
             </Button>
-            <Button
-              className="hero-cta"
-              variant="ghost"
-              onClick={() => scrollToId('locales')}
-            >
-              D&oacute;nde estamos
+            <Button className="hero-cta" variant="ghost" onClick={() => scrollToId('carta')}>
+              Ver la carta
             </Button>
           </div>
         </div>

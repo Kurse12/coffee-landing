@@ -1,21 +1,29 @@
 import { useEffect, useState } from 'react'
 import { AnimatePresence, motion, useMotionValueEvent, useScroll } from 'motion/react'
-import { Coffee, InstagramLogo, List, TiktokLogo, X } from '@phosphor-icons/react'
+import { Coffee, InstagramLogo, List, TiktokLogo, WhatsappLogo, X } from '@phosphor-icons/react'
+import Button from './Button'
 import { lockScroll, scrollToId } from '../lib/useSmoothScroll'
+import { useDemo } from '../lib/demo'
 
 const LINKS = [
   { id: 'carta', label: 'Carta' },
   { id: 'origen', label: 'Nosotros' },
   { id: 'locales', label: 'Locales' },
-  { id: 'cierre', label: 'Contacto' },
+  { id: 'voces', label: 'Voces' },
 ]
 
+/*
+  Los perfiles de la cafeteria no existen, asi que estos iconos no son enlaces:
+  abren la hoja que explica que harian en el sitio del cliente. Como dejaron de
+  navegar, dejan de ser <a> y pasan a <button>, que es lo que ahora hacen.
+*/
 const SOCIALS = [
-  { href: 'https://instagram.com', label: 'Instagram', Icon: InstagramLogo },
-  { href: 'https://tiktok.com', label: 'TikTok', Icon: TiktokLogo },
+  { label: 'Instagram', Icon: InstagramLogo },
+  { label: 'TikTok', Icon: TiktokLogo },
 ]
 
 export default function Nav() {
+  const { abrir } = useDemo()
   const [scrolleado, setScrolleado] = useState(false)
   const [open, setOpen] = useState(false)
   const { scrollY } = useScroll()
@@ -98,18 +106,29 @@ export default function Nav() {
         </ul>
 
         <div className="flex shrink-0 items-center gap-2">
+          {/* El unico atajo persistente a la accion que convierte. Antes
+              "Contacto" era un link de texto igual a los otros tres, en una
+              pagina de trece pantallas donde esa era la unica accion real. */}
+          {/* La visibilidad va en el envoltorio: `hidden` sobre el Button pelea
+              contra el `inline-flex` de su clase base y pierde, porque quien
+              gana lo decide el orden en la hoja de estilos y no el del atributo. */}
+          <div className="hidden lg:block">
+            <Button size="sm" onClick={() => abrir('whatsapp')}>
+              <WhatsappLogo size={16} weight="fill" />
+              Reservar
+            </Button>
+          </div>
+
           <div className="hidden items-center gap-1 sm:flex">
-            {SOCIALS.map(({ href, label, Icon }) => (
-              <a
+            {SOCIALS.map(({ label, Icon }) => (
+              <button
                 key={label}
-                href={href}
-                target="_blank"
-                rel="noreferrer"
-                aria-label={label}
+                onClick={() => abrir('redes')}
+                aria-label={`${label} de la cafetería (demo)`}
                 className="grid size-11 place-items-center rounded-full border border-hairline text-ink-soft transition-colors hover:border-accent hover:text-ink"
               >
                 <Icon size={17} />
-              </a>
+              </button>
             ))}
           </div>
           <button
@@ -147,20 +166,38 @@ export default function Nav() {
               ))}
             </ul>
 
+            {/* La pill de la barra solo entra en lg, asi que en el panel la
+                accion vuelve a ancho completo. */}
+            <div className="px-4 pb-4 sm:px-5 lg:hidden">
+              <Button
+                className="w-full"
+                onClick={() => {
+                  setOpen(false)
+                  lockScroll(false)
+                  abrir('whatsapp')
+                }}
+              >
+                <WhatsappLogo size={18} weight="fill" />
+                Reservar
+              </Button>
+            </div>
+
             {/* Debajo de sm los sociales salen de la barra por falta de ancho,
                 asi que reaparecen aca adentro. */}
             <div className="flex gap-2 border-t border-hairline px-4 py-4 sm:hidden">
-              {SOCIALS.map(({ href, label, Icon }) => (
-                <a
+              {SOCIALS.map(({ label, Icon }) => (
+                <button
                   key={label}
-                  href={href}
-                  target="_blank"
-                  rel="noreferrer"
-                  aria-label={label}
+                  onClick={() => {
+                    setOpen(false)
+                    lockScroll(false)
+                    abrir('redes')
+                  }}
+                  aria-label={`${label} de la cafetería (demo)`}
                   className="grid size-11 place-items-center rounded-full border border-hairline text-ink-soft"
                 >
                   <Icon size={17} />
-                </a>
+                </button>
               ))}
             </div>
           </motion.div>

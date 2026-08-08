@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react'
 import { useReducedMotion } from 'motion/react'
-import { Clock, Fire, Funnel, Oven, Recycle } from '@phosphor-icons/react'
+import { Clock, Fire, Funnel } from '@phosphor-icons/react'
 import { gsap } from '../lib/gsap'
 import { MEDIA } from '../lib/media'
 
@@ -22,7 +22,9 @@ const PASOS = [
     Icon: Clock,
     foto: MEDIA.stack.arpillera,
     alt: 'Bolsa de arpillera abierta con granos, junto a una taza servida',
-    /* Es el unico dato numerico del stack, va en rojo para separarlo del resto. */
+    /* Es el unico dato numerico del stack, va en rojo para separarlo del resto.
+       En accent-soft y no en accent: el titular se apoya sobre la foto, y ahi
+       accent no llega a ratio legible (ver la regla en index.css). */
     destacado: true,
   },
   {
@@ -34,30 +36,19 @@ const PASOS = [
     foto: MEDIA.stack.filtrado,
     alt: 'Agua cayendo sobre el café molido en el filtro, con la espuma del bloom',
   },
-  {
-    id: 'horno',
-    titulo: 'El horno a las seis',
-    texto:
-      'La primera tanda de cookies sale justo cuando abrimos la persiana. La segunda, a media tarde.',
-    Icon: Oven,
-    foto: MEDIA.stack.cookies,
-    alt: 'Pila de cookies con chips de chocolate sobre una mesa de madera',
-  },
-  {
-    id: 'vaso',
-    titulo: 'Traé tu vaso',
-    texto:
-      'Si venís con el tuyo, te descontamos el 15% del café. Sin tarjeta de sellos ni vueltas.',
-    Icon: Recycle,
-    foto: MEDIA.stack.vaso,
-    alt: 'Taza de cerámica con café en una mesa junto a la ventana',
-  },
 ]
 
 /*
-  Scroll-stack a sangre: cinco tarjetas a pantalla completa que se apilan una
-  sobre otra. Motivo: son cinco pasos de un proceso, y apilarlos obliga a
-  mirarlos de a uno, en orden, en vez de barrer una grilla de un vistazo.
+  Scroll-stack a sangre: tres tarjetas a pantalla completa que se apilan una
+  sobre otra. Motivo: son los tres pasos del proceso que promete el titular
+  (tostar, descansar, filtrar), y apilarlos obliga a mirarlos de a uno, en
+  orden, en vez de barrer una grilla de un vistazo.
+
+  Eran cinco. La novedad del apilado se gasta en la segunda tarjeta, asi que de
+  la tercera en adelante era desgaste: la seccion sola se llevaba el 41% del
+  alto de la pagina. Las dos que salieron ("El horno a las seis" y "Trae tu
+  vaso") no eran pasos del proceso sino datos sueltos, y por eso el recorte no
+  deja hueco: la secuencia queda mas clara sin ellas.
 
   El apilado es `position: sticky` (ver index.css). GSAP solo encoge la tarjeta
   saliente hacia su borde superior y le sube un velo oscuro, para que se lea
@@ -141,7 +132,7 @@ export default function Ritual() {
                 <Icon size={34} className="text-accent-soft" />
                 <h3
                   className={`display-xl mt-7 max-w-[13ch] text-[clamp(2.7rem,7.5vw,6.2rem)] ${
-                    destacado ? 'text-accent' : 'text-ink'
+                    destacado ? 'text-accent-soft' : 'text-ink'
                   }`}
                 >
                   {titulo}

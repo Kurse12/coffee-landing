@@ -15,6 +15,19 @@
 */
 
 @theme {
+  /*
+    Tres pesos de tinta, y el tercero NO es para texto.
+
+    ink       #f5f2ee  titulares y texto principal
+    ink-soft  #a8a29b  texto secundario. 7.79:1 sobre void, 6.79:1 sobre
+                       surface-2: es el gris mas tenue que todavia llega a AA
+                       en cuerpo chico.
+    ink-faint #6b6660  bordes, iconos inactivos y glifos decorativos. Mide
+                       3.46:1 sobre void y 3.02:1 sobre surface-2, o sea que
+                       NO alcanza para texto normal. Si algo que lleva
+                       informacion esta en ink-faint, es un error: va en
+                       ink-soft.
+  */
   --color-ink: #f5f2ee;
   --color-ink-soft: #a8a29b;
   --color-ink-faint: #6b6660;
@@ -29,10 +42,42 @@
       accent      #cc2a26 -> relleno de botones. Texto blanco encima = 4.8:1 (AA)
       accent-soft #ff5b52 -> texto e iconos chicos sobre negro = 6.2:1 (AA)
       accent-deep #99201d -> hover / presionado
+
+    Regla que se paga cara si se olvida: SOBRE FOTO, el rojo de texto es
+    accent-soft, nunca accent.
+
+    accent tiene luminancia 0,146 y eso lo deja en la peor banda posible: sobre
+    negro llega a 3,68:1 y aguanta, pero cualquier foto atenuada por un velo cae
+    en el medio del rango y el contraste se desploma. Medido sobre la arpillera
+    del ritual con el velo movil (void al 74%): 2,21:1 en la parte clara, 1,82:1
+    contra el plato blanco. accent-soft, con luminancia 0,294, da 3,87:1 en el
+    mismo punto y 6,44:1 sobre negro, o sea que sirve en los dos fondos.
+
+    Por eso el titular del hero sigue en accent: ahi el velo lleva el fondo casi
+    a negro puro y esta medido en 3,10-3,25:1. En cuanto la foto se ve, va soft.
   */
   --color-accent: #cc2a26;
   --color-accent-soft: #ff5b52;
   --color-accent-deep: #99201d;
+
+  /*
+    Tonos del cafe. NO son acentos de interfaz: viven solo en el hero, en el
+    shader del fondo y en el halo detras de la taza. Ningun control, ningun
+    texto y ningun borde los usa.
+
+    El fondo del hero era rojo por herencia, no por decision: venia del shader
+    de seda anterior, que se tiño con el acento porque la paleta es negro mas
+    un rojo. Pero el acento tiene que significar algo en los botones y en la
+    linea roja del titular, y si tambien pinta el fondo aparece en todos lados
+    y por eso significa menos. Sacandolo del fondo, el rojo vuelve a los dos
+    lugares donde decide algo.
+
+    Los tres salen de la foto de la taza, asi que la pagina ya los venia
+    mostrando sin nombrarlos.
+  */
+  --color-espresso: #1d1209;
+  --color-tueste: #8c4b21;
+  --color-crema: #c8813c;
 
   --radius-card: 20px;
 
@@ -84,9 +129,22 @@
 @utility display-xl {
   font-family: var(--font-display);
   text-transform: uppercase;
-  /* 0.9 y no menos: el espanol en mayusculas trae tildes (CAFÉ, MÁQUINA) que a
-     0.86 chocan con la linea de arriba. */
-  line-height: 0.9;
+  /*
+    0.96, y el numero sale de una medicion, no del gusto.
+
+    Anton apoya la base a 0.75em del techo de su caja de linea, y una tilde de
+    mayuscula sube hasta 0.82em por encima de esa base. O sea que la tinta de
+    un renglon con tilde arranca 0.07em ARRIBA de su propia caja: con 0.9 se
+    mete adentro del renglon anterior. Se veia en "UNA MÁQUINA" de Origen, que
+    es la unica cabecera de tres lineas de la pagina, y a 1440 igual que a 390.
+
+    0.96 deja 0.14em de aire entre la tilde y la base de arriba. Mas alto que
+    eso el titular deja de leerse como bloque, que es de lo que vive.
+
+    El hero no pasa por aca: sus dos lineas son bloques separados con su propio
+    margen, asi que este valor solo gobierna las cabeceras que envuelven.
+  */
+  line-height: 0.96;
   letter-spacing: -0.01em;
   font-weight: 400;
 }
@@ -144,11 +202,20 @@
 .leaflet-container {
   background: var(--color-surface);
   font-family: var(--font-sans);
+  /* Los panes internos de Leaflet van de z-index 400 a 700, pensados para una
+     pagina que no tiene nada fijo arriba. En desktop el contenedor del mapa es
+     static, asi que esos 400 no quedan encapsulados en ningun lado y compiten
+     contra el z-50 del header en la raiz: los tiles se dibujaban por encima de
+     la barra. El isolate los deja en un contexto propio y el mapa entero pasa a
+     valer lo que vale su contenedor. */
+  isolation: isolate;
 }
+/* La atribucion es obligatoria, asi que tiene que poder leerse: sube de
+   ink-faint a ink-soft y de 10 a 11 px. */
 .leaflet-control-attribution {
   background: rgb(11 11 12 / 0.78) !important;
-  color: var(--color-ink-faint) !important;
-  font-size: 10px !important;
+  color: var(--color-ink-soft) !important;
+  font-size: 11px !important;
 }
 .leaflet-control-attribution a {
   color: var(--color-ink-soft) !important;

@@ -87,10 +87,6 @@ export default function Origen() {
         </div>
 
         <div className="origen-copy">
-          <p className="origen-reveal mb-6 text-[11px] font-semibold uppercase tracking-[0.28em] text-accent-soft">
-            Nosotros
-          </p>
-
           <h2 className="origen-reveal display-xl max-w-[14ch] text-[clamp(2.4rem,6.2vw,4.6rem)]">
             Empezamos con una m&aacute;quina prestada
           </h2>

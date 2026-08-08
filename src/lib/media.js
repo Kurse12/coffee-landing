@@ -11,11 +11,14 @@ import flatWhite from '../media/flat_white.jpg'
 import interior from '../media/interior.jpg'
 import medialuna from '../media/medialuna.jpg'
 
+/*
+  Tres, no cinco: el ritual paso de cinco tarjetas a tres. Los archivos
+  cookies2.jpg y vaso.jpg siguen en src/media pero ya no se importan, asi que
+  no entran al bundle. Estan disponibles si alguna seccion los necesita.
+*/
 import granos from '../media/tostamos_martes.jpg'
 import arpillera from '../media/descanso_72hs.jpg'
 import filtrado from '../media/filtrado_pedido.jpg'
-import cookies from '../media/cookies2.jpg'
-import vaso from '../media/vaso.jpg'
 
 import salon from '../media/int_horizontal.jpg'
 
@@ -29,14 +32,20 @@ export const MEDIA = {
   taza: '/taza-hero.png',
   /* 1:1 tras recorte circular. */
   origen: interior,
-  /* 4:5 verticales, un producto por foto. El orden sigue al de ITEMS en Carta. */
+  /*
+    Un producto por foto, y el orden sigue al de ITEMS en Carta. Las relaciones
+    de los archivos van de 1:1 a 2:3: la tarjeta fija el alto y object-cover
+    recorta, asi que lo unico que hay que respetar al cambiar una es que el
+    producto quede centrado. Las medidas reales viven junto a cada item en
+    Carta.jsx, que es donde el navegador las necesita.
+  */
   carta: [espresso, flatWhite, v60, cookie, medialuna],
   /*
     Fondos del scroll-stack, uno por tarjeta. Van a sangre y a pantalla
     completa, con un velo oscuro encima, asi que lo que importa es que el sujeto
     quede al centro: el recorte vertical es agresivo en pantallas anchas.
   */
-  stack: { granos, arpillera, filtrado, cookies, vaso },
+  stack: { granos, arpillera, filtrado },
   /* 16:9 al sangrar en la banda de cierre. */
   cierre: salon,
 }
