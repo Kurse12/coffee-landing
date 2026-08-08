@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react'
 import { useReducedMotion } from 'motion/react'
-import { gsap, ScrollTrigger } from '../lib/gsap'
+import { gsap } from '../lib/gsap'
 
 const WORDS = [
   'Tostado propio',
@@ -35,8 +35,14 @@ function Strip({ hidden }) {
 /*
   Unica banda cinetica de la pagina. Motivo: separa el hero de la historia y
   enumera los rasgos del lugar sin gastar una seccion entera en una lista.
-  El scroll modula direccion y velocidad, asi la banda responde al usuario
-  en vez de girar sola, indiferente a lo que hace.
+
+  Corre a velocidad constante y no escucha al scroll. Antes el scroll le
+  modulaba velocidad y direccion, y eso la cortaba: al pasar el hero pegaba un
+  tiron y podia darse vuelta. Ademas la velocidad se escribia por dos lados a la
+  vez (a mano en cada onUpdate y por un tween al frenar), asi que se pisaban.
+  El desplazamiento es exactamente medio track, que son las dos tiras identicas,
+  con lo cual el reinicio del loop cae en un punto donde el dibujo es el mismo y
+  no se ve costura.
 */
 export default function Marquee() {
   const root = useRef(null)
@@ -44,36 +50,17 @@ export default function Marquee() {
 
   useEffect(() => {
     if (reduce) return
-    let idleTimer
 
     const ctx = gsap.context(() => {
-      const loop = gsap.to('.marquee-track', {
+      gsap.to('.marquee-track', {
         xPercent: -50,
         ease: 'none',
         duration: 26,
         repeat: -1,
       })
-
-      ScrollTrigger.create({
-        trigger: root.current,
-        start: 'top bottom',
-        end: 'bottom top',
-        onUpdate: (self) => {
-          loop.timeScale(gsap.utils.clamp(-6, 6, 1 + self.getVelocity() / 320))
-          clearTimeout(idleTimer)
-          // Al frenar el scroll vuelve a su marcha base en vez de quedar
-          // clavada en la ultima velocidad.
-          idleTimer = setTimeout(() => {
-            gsap.to(loop, { timeScale: 1, duration: 0.6, overwrite: true })
-          }, 180)
-        },
-      })
     }, root)
 
-    return () => {
-      clearTimeout(idleTimer)
-      ctx.revert()
-    }
+    return () => ctx.revert()
   }, [reduce])
 
   return (

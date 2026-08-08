@@ -13,6 +13,7 @@
     "@fontsource-variable/outfit": "^5.3.0",
     "@fontsource/anton": "^5.3.0",
     "@phosphor-icons/react": "^2.1.10",
+    "@react-three/fiber": "^9.7.0",
     "@tailwindcss/vite": "^4.3.3",
     "gsap": "^3.15.0",
     "leaflet": "^1.9.4",
@@ -21,7 +22,8 @@
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
     "react-leaflet": "^5.0.0",
-    "tailwindcss": "^4.3.3"
+    "tailwindcss": "^4.3.3",
+    "three": "^0.185.1"
   },
   "devDependencies": {
     "@types/react": "^19.2.17",

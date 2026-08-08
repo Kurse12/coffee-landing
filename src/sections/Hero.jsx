@@ -1,13 +1,16 @@
 import { useEffect, useRef } from 'react'
 import { useReducedMotion } from 'motion/react'
 import Button from '../components/Button'
+import FondoSilk from '../components/FondoSilk'
 import { gsap } from '../lib/gsap'
 import { MEDIA } from '../lib/media'
 import { scrollToId } from '../lib/useSmoothScroll'
 
 /*
-  Hero split asimetrico. La taza es un PNG recortado, asi que va suelta sobre el
-  fondo (sin mascara ni marco) y se anima como objeto, no como foto.
+  Hero de imagen grande. La taza recortada ocupa el alto util de la ventana y el
+  titular se lee en dos tiempos: una linea corta en blanco que entra, y el remate
+  en rojo al doble de cuerpo. El peso visual esta repartido entre foto y tipo,
+  no entre columnas iguales.
 
   Cuatro capas anidadas, una propiedad por capa, para que las animaciones no se
   pisen entre si:
@@ -36,22 +39,15 @@ export default function Hero() {
       tl.from('.hero-halo', { scale: 0.6, opacity: 0, duration: 1.6 })
         .from(
           '.hero-media',
-          { yPercent: 18, scale: 0.86, rotate: -7, opacity: 0, duration: 1.5 },
+          { yPercent: 14, scale: 0.88, rotate: -6, opacity: 0, duration: 1.5 },
           0.1,
         )
-        .from('.hero-line > span', { yPercent: 115, duration: 1.1, stagger: 0.09 }, 0.25)
-        .from('.hero-sub', { y: 18, opacity: 0, duration: 0.9 }, 0.7)
-        .from('.hero-cta', { y: 14, opacity: 0, duration: 0.8, stagger: 0.08 }, 0.82)
+        .from('.hero-line > span', { yPercent: 115, duration: 1.1, stagger: 0.1 }, 0.25)
+        .from('.hero-cta', { y: 14, opacity: 0, duration: 0.8, stagger: 0.08 }, 0.75)
         // La flotacion arranca recien cuando la taza termino de acomodarse.
         .to(
           '.hero-float',
-          {
-            y: -14,
-            duration: 2.6,
-            ease: 'sine.inOut',
-            repeat: -1,
-            yoyo: true,
-          },
+          { y: -16, duration: 2.8, ease: 'sine.inOut', repeat: -1, yoyo: true },
           '>-0.3',
         )
 
@@ -88,19 +84,45 @@ export default function Hero() {
       ref={root}
       className="relative flex min-h-[100dvh] items-center overflow-hidden pt-20 pb-14 lg:pt-24 lg:pb-16"
     >
-      <div className="relative mx-auto grid w-full max-w-[1400px] grid-cols-1 items-center gap-8 px-5 lg:grid-cols-[1fr_1.05fr] lg:gap-16 lg:px-10">
+      <FondoSilk />
+
+      {/*
+        Capa de textura tipografica, el equivalente propio a las garabateadas de
+        tiza del fondo de la referencia: da algo que mirar en el negro sin pelear
+        con el contenido. Va por encima del velo para que se vea, y a una
+        opacidad tan baja que se lee como marca de agua, no como texto.
+        Las dos palabras viven del lado de la foto; la columna derecha queda
+        limpia para el titular.
+      */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 hidden overflow-hidden select-none lg:block"
+      >
+        <span className="display-xl absolute top-[6%] -left-[3%] text-[17vw] text-transparent opacity-[0.06] [-webkit-text-stroke:1.5px_var(--color-ink)]">
+          Tostado
+        </span>
+        <span className="display-xl absolute bottom-[4%] left-[18%] text-[13vw] text-transparent opacity-[0.05] [-webkit-text-stroke:1.5px_var(--color-accent)]">
+          Cookies
+        </span>
+      </div>
+
+      <div className="relative mx-auto grid w-full max-w-[1400px] grid-cols-1 items-center gap-8 px-5 lg:grid-cols-[1.05fr_1fr] lg:gap-12 lg:px-10">
         <div className="relative order-1 flex justify-center lg:order-none">
-          {/* Halo de marca detras del recorte, para que la taza no quede
-              flotando en el vacio. Un solo acento, sin glow neon. */}
+          {/* Foco detras del recorte. Ahora que el fondo es casi negro vuelve a
+              subir: es lo que despega la taza del fondo y evita que el recorte
+              se lea como pegado encima. */}
           <div
             aria-hidden
-            className="hero-halo pointer-events-none absolute top-1/2 left-1/2 aspect-square w-[min(115%,560px)] -translate-x-1/2 -translate-y-1/2 rounded-full bg-accent/22 blur-[90px]"
+            className="hero-halo pointer-events-none absolute top-1/2 left-1/2 aspect-square w-[min(125%,800px)] -translate-x-1/2 -translate-y-1/2 rounded-full bg-accent/24 blur-[120px]"
           />
 
-          {/* El ancho se ata tambien a la altura de la ventana, no solo al
-              ancho: en telefonos bajos (una SE) una taza de 280 px empuja los
-              CTA abajo del pliegue. */}
-          <div className="hero-parallax relative w-full max-w-[min(280px,30vh)] sm:max-w-[min(340px,34vh)] lg:max-w-[min(44vh,420px)]">
+          {/*
+            El ancho se mide contra la altura de la ventana y no contra la
+            columna: es lo que mantiene la foto grande sin empujar los CTA fuera
+            del primer viewport. El tope en px existe porque el PNG es de 350
+            px de lado y estirarlo mas alla de eso ya se nota blando.
+          */}
+          <div className="hero-parallax relative w-full max-w-[min(330px,38vh)] sm:max-w-[min(460px,50vh)] lg:max-w-[min(680px,76vh)]">
             <div className="hero-media">
               <div className="hero-float">
                 <img
@@ -109,29 +131,39 @@ export default function Hero() {
                   fetchPriority="high"
                   width={350}
                   height={350}
-                  className="w-full [filter:brightness(0.97)_drop-shadow(0_34px_44px_rgba(0,0,0,0.6))]"
+                  className="w-full [filter:brightness(1.02)_contrast(1.04)_drop-shadow(0_54px_70px_rgba(0,0,0,0.7))]"
                 />
               </div>
             </div>
           </div>
         </div>
 
-        <div className="hero-copy order-2 lg:order-none">
-          <h1 className="display-xl text-[clamp(2.9rem,9vw,6.2rem)]">
-            <span className="hero-line line-mask block">
+        {/*
+          Centrado en movil, donde el bloque ocupa el ancho completo y alinear a
+          la izquierda le deja un vacio raro a la derecha. En desktop vuelve a la
+          izquierda, que es lo que sostiene el split asimetrico con la foto.
+        */}
+        <div className="hero-copy order-2 text-center lg:order-none lg:text-left">
+          {/*
+            Dos tiempos, no dos lineas iguales: la primera presenta y la segunda
+            remata en rojo, a mas del doble de cuerpo.
+
+            El termino en vw de cada clamp es agresivo a proposito. Antes las dos
+            lineas quedaban clavadas en su valor minimo en cualquier telefono,
+            porque el vw nunca llegaba a superarlo, y por eso el titular se veia
+            chico justo donde tenia que gritar. Los topes en rem siguen
+            protegiendo el desktop.
+          */}
+          <h1 className="display-xl">
+            <span className="hero-line line-mask block text-[clamp(1.7rem,7.5vw,3.1rem)]">
               <span className="block">Caf&eacute; tostado</span>
             </span>
-            <span className="hero-line line-mask block text-accent">
+            <span className="hero-line line-mask mt-1 block text-[clamp(3.6rem,17vw,8rem)] text-accent">
               <span className="block">ac&aacute; nom&aacute;s</span>
             </span>
           </h1>
 
-          <p className="hero-sub mt-6 max-w-[46ch] text-base leading-relaxed text-ink-soft lg:mt-7 lg:text-lg">
-            Tostamos en Palermo cada martes y horneamos las cookies a la ma&ntilde;ana. Tres
-            locales, cero misterio.
-          </p>
-
-          <div className="mt-7 flex flex-wrap items-center gap-3 lg:mt-9">
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-3 lg:mt-10 lg:justify-start">
             <Button className="hero-cta" onClick={() => scrollToId('carta')}>
               Ver la carta
             </Button>

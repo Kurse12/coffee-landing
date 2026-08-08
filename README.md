@@ -20,6 +20,7 @@ Las tres librerías hacen cosas distintas y no se pisan:
 | **Lenis** | Suavizado del scroll de toda la página | `src/lib/useSmoothScroll.js` |
 | **GSAP + ScrollTrigger** | Pin, scrub y timelines de entrada | Hero, Marquee, Origen, Carta, Cierre |
 | **Motion** | Entradas al viewport y menú mobile | `Reveal`, Nav, Ritual, Locales, Voces |
+| **Three.js + R3F** | Shader del fondo del hero | `Silk`, `FondoSilk` |
 
 Lenis y ScrollTrigger están casados en `useSmoothScroll`: Lenis pasa a ser la
 fuente de verdad del scroll y GSAP recalcula sus triggers en el mismo tick. Sin
@@ -39,14 +40,49 @@ inalcanzable. Bajo reduced-motion pasa a ser un carrusel nativo con snap.
 
 ## Secciones
 
-1. **Hero** · split asimétrico, entrada enmascarada del titular y parallax al salir
-2. **Marquee** · banda cinética cuya velocidad y dirección modula el scroll
+1. **Hero** · imagen grande y titular en dos tiempos, con entrada enmascarada y parallax al salir
+2. **Marquee** · banda cinética a velocidad constante, independiente del scroll
 3. **Origen** · foto fija (sticky) con el relato corriendo al lado y anillo de texto que gira
 4. **Carta** · recorrido horizontal con pin en todos los anchos, mobile incluido
 5. **Ritual** · scroll-stack a sangre, cinco tarjetas a pantalla completa que se apilan
 6. **Locales** · lista + mapa Leaflet, se seleccionan entre sí
 7. **Voces** · testimonios sin caja, con anchos y desfases distintos
 8. **Cierre** · CTA a sangre con zoom lento, más footer con form de avisos
+
+## El fondo del hero
+
+`src/components/Silk.jsx` es el componente Silk de [React Bits](https://reactbits.dev),
+copiado tal cual salvo por un cambio: `dpr` pasa a ser prop en vez de estar fijo
+en `[1, 2]`. Está marcado con un `NOTA:` en el archivo. Al actualizarlo desde el
+repo original, reaplicar ese cambio.
+
+`src/components/FondoSilk.jsx` es el envoltorio propio, y es donde está todo lo
+que hace falta para que el shader conviva con la página.
+
+**El color es `#99201d`**, que es el token `accent-deep` de la paleta. El shader
+devuelve `color * patrón` con el patrón entre 0.2 y 1.0, así que el tono elegido
+es el punto **más claro** que va a aparecer en pantalla, no el promedio. Con el
+acento pleno (`#cc2a26`), los brillos de la seda competirían con los botones y
+con la línea roja del titular, que son los dos lugares donde ese rojo tiene que
+significar algo.
+
+**Contraste.** El titular tiene una línea en rojo, y rojo sobre rojo no llega a
+ratio legible. El velo que va encima deja la seda a la vista del lado de la foto
+y lleva la columna de texto casi a negro puro. Medido en el punto más brillante
+posible del shader, el rojo del titular queda en 3.65:1 en desktop y 3.40:1 en
+mobile, ambos por encima del mínimo AA para texto grande.
+
+**Costo.** Es un shader a pantalla completa corriendo siempre. Se monta solo
+mientras el hero está en pantalla, vía IntersectionObserver, y se desmonta al
+salir, así el resto de la página no paga nada. En pantallas táctiles baja a
+`dpr 1`, y en el resto a `[1, 1.5]` en vez de `[1, 2]`.
+
+**Degradación.** Sin WebGL, con el canvas caído (hay un límite de error
+alrededor) o con `prefers-reduced-motion`, no se dibuja nada y el hero se queda
+con su halo de siempre.
+
+**Dial principal.** La opacidad del canvas, hoy en `opacity-70`. Es lo que hay
+que mover si la seda se ve muy fuerte o muy tímida.
 
 ## Mapa
 
@@ -82,6 +118,18 @@ desatura: la comida pierde.
 
 ### Pendientes de fotografía
 
+- **`taza-hero.png` mide 350 x 350, y es lo primero que se ve.** El hero la
+  estira hasta 680 px de lado, o sea 1,94 veces su tamaño real. Ese tamaño es el
+  que hace falta para que el producto ocupe el 70% del alto de pantalla, que es
+  la proporción que le da presencia al hero, pero a ese aumento el recorte se
+  ablanda. **Es el pendiente de mayor impacto de todo el proyecto:** hace falta
+  el mismo recorte exportado a 1400 px de lado, con fondo transparente y sin
+  margen sobrante alrededor de la taza. El tope está en
+  `max-w-[min(680px,76vh)]` en `Hero.jsx`.
+- **Recortes de granos de café sueltos, 3 o 4, en PNG con transparencia**, de
+  unos 300 px cada uno. Es lo que falta para el efecto de la referencia, donde
+  los pistachos vuelan fuera de la cookie y rompen la caja del producto. Sin
+  ellos el hero tiene composición correcta pero nada que sugiera movimiento.
 - **`int_horizontal.jpg`** mide 735 x 490, y en la banda de cierre va a sangre
   sobre todo el ancho de pantalla. En un monitor grande se amplía casi al doble.
   El velo oscuro y el zoom corto lo disimulan, pero la misma toma en 2400 px de
