@@ -1,0 +1,179 @@
+@import 'tailwindcss';
+
+@import '@fontsource/anton/400.css';
+@import '@fontsource-variable/outfit';
+@import 'leaflet/dist/leaflet.css';
+
+/*
+  Demo generica de cafeteria.
+  Theme lock: la pagina es dark en su totalidad. Es una decision de marca
+  (negro + un unico acento rojo), no un default. No hay secciones invertidas.
+
+  Escala de radios, una sola regla para toda la pagina:
+    - elementos interactivos (botones, pills, chips) -> rounded-full
+    - contenedores (cards, media, mapa)              -> var(--radius-card) = 20px
+*/
+
+@theme {
+  --color-ink: #f5f2ee;
+  --color-ink-soft: #a8a29b;
+  --color-ink-faint: #6b6660;
+
+  --color-void: #0b0b0c;
+  --color-surface: #131316;
+  --color-surface-2: #1b1b1f;
+  --color-hairline: #26262b;
+
+  /*
+    Un solo acento en toda la pagina, en tres pesos, elegidos por contraste:
+      accent      #cc2a26 -> relleno de botones. Texto blanco encima = 4.8:1 (AA)
+      accent-soft #ff5b52 -> texto e iconos chicos sobre negro = 6.2:1 (AA)
+      accent-deep #99201d -> hover / presionado
+  */
+  --color-accent: #cc2a26;
+  --color-accent-soft: #ff5b52;
+  --color-accent-deep: #99201d;
+
+  --radius-card: 20px;
+
+  --font-display: 'Anton', 'Arial Narrow', sans-serif;
+  --font-sans: 'Outfit Variable', system-ui, sans-serif;
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@layer base {
+  html {
+    /* Lenis maneja el scroll; el smooth nativo pelearia con el. */
+    scroll-behavior: auto;
+    background-color: var(--color-void);
+  }
+
+  body {
+    background-color: var(--color-void);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  /* Lenis: el wrapper toma control del scroll del documento. */
+  html.lenis,
+  html.lenis body {
+    height: auto;
+  }
+  .lenis.lenis-smooth {
+    scroll-behavior: auto !important;
+  }
+  .lenis.lenis-stopped {
+    overflow: hidden;
+  }
+
+  ::selection {
+    background-color: var(--color-accent);
+    color: var(--color-ink);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+}
+
+@utility display-xl {
+  font-family: var(--font-display);
+  text-transform: uppercase;
+  /* 0.9 y no menos: el espanol en mayusculas trae tildes (CAFÉ, MÁQUINA) que a
+     0.86 chocan con la linea de arriba. */
+  line-height: 0.9;
+  letter-spacing: -0.01em;
+  font-weight: 400;
+}
+
+/* Linea enmascarada para la entrada del titular. El padding superior le da aire
+   a la tilde sin dejar asomar el texto que todavia no entro; el margen negativo
+   devuelve la linea a su posicion original. */
+@utility line-mask {
+  overflow: hidden;
+  padding-top: 0.16em;
+  margin-top: -0.16em;
+}
+
+/*
+  Fotografia real y calida sobre fondo negro. El ajuste es minimo a proposito:
+  apenas baja el brillo y sube el contraste para que las fotos no floten
+  demasiado claras contra el fondo. Nada de desaturar, la comida pierde.
+*/
+@utility photo-treat {
+  filter: contrast(1.06) saturate(1.02) brightness(0.94);
+}
+
+/*
+  Scroll-stack: el apilado lo hace `position: sticky`, no el pin de GSAP.
+  Es mas robusto (no inserta pin-spacers ni envoltorios con transform) y convive
+  mejor con Lenis. GSAP solo se encarga de encoger y oscurecer la tarjeta que
+  esta quedando abajo.
+  Bajo reduced-motion se apaga el sticky y las tarjetas pasan a leerse una
+  debajo de la otra, sin apilado ligado al scroll.
+*/
+.stack-card {
+  position: sticky;
+  top: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stack-card {
+    position: relative;
+  }
+}
+
+/* Grano: pseudo-elemento fijo, pointer-events none. Nunca sobre un contenedor
+   que scrollea, para no forzar repaints continuos de GPU. */
+.grain::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  pointer-events: none;
+  opacity: 0.05;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* Mapa: Leaflet trae su propio chrome claro, lo alineamos al tema. */
+.leaflet-container {
+  background: var(--color-surface);
+  font-family: var(--font-sans);
+}
+.leaflet-control-attribution {
+  background: rgb(11 11 12 / 0.78) !important;
+  color: var(--color-ink-faint) !important;
+  font-size: 10px !important;
+}
+.leaflet-control-attribution a {
+  color: var(--color-ink-soft) !important;
+}
+.leaflet-control-zoom a {
+  background: var(--color-surface-2) !important;
+  color: var(--color-ink) !important;
+  border-color: var(--color-hairline) !important;
+}
+.leaflet-control-zoom a:hover {
+  background: var(--color-accent) !important;
+}
+.leaflet-popup-content-wrapper,
+.leaflet-popup-tip {
+  background: var(--color-surface-2) !important;
+  color: var(--color-ink) !important;
+  border-radius: 12px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
