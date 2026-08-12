@@ -49,6 +49,7 @@ export default function FondoCrema() {
   const reduce = useReducedMotion()
 
   const [aLaVista, setALaVista] = useState(false)
+  const [montado, setMontado] = useState(false)
   const [caido, setCaido] = useState(false)
   const [visible, setVisible] = useState(false)
   const [permitido] = useState(hayWebGL)
@@ -68,45 +69,78 @@ export default function FondoCrema() {
     return () => io.disconnect()
   }, [activo])
 
-  // Aparece con una fundida en vez de aparecer de golpe cuando resuelve el chunk.
+  /*
+    Una vez que el canvas aparecio, se queda montado para siempre (mientras
+    "activo" siga en pie). Antes el bloque entero se desmontaba al salir del
+    viewport y se volvia a montar al entrar, lo que recreaba el contexto WebGL
+    y recompilaba el shader cada vez: eso es lo que se sentia como el "tirón"
+    de un segundo al volver a scrollear hacia arriba. Ahora solo se pausa el
+    loop de render en Crema (ver prop activo mas abajo) y el contexto queda
+    vivo, asi que volver a aparecer es instantaneo.
+  */
   useEffect(() => {
-    if (!aLaVista) return
-    const id = requestAnimationFrame(() => setVisible(true))
-    return () => cancelAnimationFrame(id)
+    if (aLaVista) setMontado(true)
   }, [aLaVista])
+
+  /*
+    "visible" solo se prende cuando Crema llama a onListo mas abajo, es decir
+    cuando el canvas ya tiene contexto y esta por pintar su primer frame. Antes
+    se prendia apenas el hero entraba en viewport, que pasa bien antes de que
+    el chunk de three.js (unos 250 kB) termine de bajar y evaluarse: para
+    cuando el chunk resolvia, "visible" ya era true y el div de la fundida
+    (que vive dentro del Suspense) nacia directo en opacity-75, sin fotograma
+    previo en 0 del cual partir. Por eso el shader aparecia de golpe en vez de
+    fundirse. Ahora el div vive fuera del Suspense (ver mas abajo) y arranca en
+    0 de verdad, asi que cuando "visible" se prende la transicion se ve.
+  */
+  const marcarListo = () => setVisible(true)
 
   return (
     <div ref={caja} aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
-      {activo && aLaVista && (
-        <BordeDeError onError={() => setCaido(true)}>
-          <Suspense fallback={null}>
-            {/*
-              Dial principal. La crema es textura de fondo, no un campo de
-              color: pasado cierto valor el hero se vuelve un lavado rojo de
-              tono medio y la taza blanca y el titular rojo pierden separacion,
-              porque quedan sobre algo del mismo valor que ellos.
+      {activo && montado && (
+        /*
+          Dial principal. La crema es textura de fondo, no un campo de color:
+          pasado cierto valor el hero se vuelve un lavado rojo de tono medio y
+          la taza blanca y el titular rojo pierden separacion, porque quedan
+          sobre algo del mismo valor que ellos.
 
-              Va bastante mas alto que el 30% que llevaba la seda por dos
-              razones: este shader es mas oscuro de por si (tiene viñeta propia
-              y el patron pasa la mayor parte del tiempo en la mitad baja del
-              rango), y los tonos de cafe son menos saturados que el rojo que
-              habia antes, asi que al mismo valor se leen mas apagados.
+          Va bastante mas alto que el 30% que llevaba la seda por dos razones:
+          este shader es mas oscuro de por si (tiene viñeta propia y el patron
+          pasa la mayor parte del tiempo en la mitad baja del rango), y los
+          tonos de cafe son menos saturados que el rojo que habia antes, asi
+          que al mismo valor se leen mas apagados.
 
-              El techo no lo pone el gusto sino el titular rojo. Por eso el velo
-              de abajo cierra mas fuerte sobre la columna de texto: el lado de
-              la foto puede aguantar mucho mas que el lado donde hay que leer.
-            */}
-            <div
-              className={`absolute inset-0 transition-opacity duration-1000 ${
-                visible ? 'opacity-75' : 'opacity-0'
-              }`}
-            >
+          El techo no lo pone el gusto sino el titular rojo. Por eso el velo
+          de abajo cierra mas fuerte sobre la columna de texto: el lado de la
+          foto puede aguantar mucho mas que el lado donde hay que leer.
+
+          Este div va FUERA del Suspense a proposito: tiene que existir en el
+          DOM en opacity-0 desde antes de que el chunk de Crema resuelva, si
+          no la transicion no tiene fotograma de partida (ver el comentario
+          largo en marcarListo mas arriba).
+        */
+        <div
+          className={`absolute inset-0 transition-opacity duration-1000 ${
+            visible ? 'opacity-75' : 'opacity-0'
+          }`}
+        >
+          <BordeDeError onError={() => setCaido(true)}>
+            <Suspense fallback={null}>
               {/* Los tonos vienen de los tokens --color-espresso / -tueste /
-                  -crema, que Crema lee por su cuenta. */}
-              <Crema speed={1.15} scale={2.6} dpr={tactil ? 1 : [1, 1.5]} />
-            </div>
-          </Suspense>
-        </BordeDeError>
+                  -crema, que Crema lee por su cuenta. Se le pasa aLaVista para
+                  que pause el loop de render (no el montaje) mientras el hero
+                  esta fuera de pantalla: asi no gasta GPU de mas y reaparece
+                  sin el salto de recrear el contexto. */}
+              <Crema
+                speed={1.15}
+                scale={2.6}
+                dpr={tactil ? 1 : [1, 1.5]}
+                activo={aLaVista}
+                onListo={marcarListo}
+              />
+            </Suspense>
+          </BordeDeError>
+        </div>
       )}
 
       {/*

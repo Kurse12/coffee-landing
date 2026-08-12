@@ -203,6 +203,8 @@ export default function Crema({
   speed = 1,
   scale = 1,
   dpr = [1, 1.5],
+  activo = true,
+  onListo,
 }) {
   const uniforms = useMemo(
     () => ({
@@ -218,7 +220,16 @@ export default function Crema({
   )
 
   return (
-    <Canvas dpr={dpr} frameloop="always">
+    // El canvas se queda montado aunque el hero salga de pantalla (ver
+    // FondoCrema); lo unico que se pausa es el loop de render, con
+    // frameloop="demand". Asi no se recrea el contexto WebGL ni se
+    // recompila el shader al volver, que era el salto de ~1s original.
+    //
+    // onCreated avisa a FondoCrema que el contexto ya existe y va a pintar el
+    // primer frame ya mismo: es la señal real para arrancar el fundido de
+    // entrada, en vez de dispararlo apenas el hero entra en viewport (que
+    // pasa bastante antes de que el chunk de three.js termine de cargar).
+    <Canvas dpr={dpr} frameloop={activo ? 'always' : 'demand'} onCreated={() => onListo?.()}>
       <CremaPlane uniforms={uniforms} />
     </Canvas>
   )

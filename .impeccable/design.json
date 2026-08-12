@@ -1,0 +1,114 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-08-12T00:00:00.000Z",
+  "title": "Design System: Cafetería",
+  "extensions": {
+    "colorMeta": {
+      "ink": { "role": "neutral", "displayName": "Warm Porcelain", "canonical": "#f5f2ee" },
+      "ink-soft": { "role": "neutral", "displayName": "Ash Taupe", "canonical": "#a8a29b" },
+      "ink-faint": { "role": "neutral", "displayName": "Spent Grounds", "canonical": "#6b6660" },
+      "void": { "role": "neutral", "displayName": "Roastery Black", "canonical": "#0b0b0c" },
+      "surface": { "role": "neutral", "displayName": "Concrete Counter", "canonical": "#131316" },
+      "surface-2": { "role": "neutral", "displayName": "Raised Counter", "canonical": "#1b1b1f" },
+      "hairline": { "role": "neutral", "displayName": "Steam Line", "canonical": "#26262b" },
+      "accent": { "role": "primary", "displayName": "Sign Red", "canonical": "#cc2a26" },
+      "accent-soft": { "role": "primary", "displayName": "Neon Red", "canonical": "#ff5b52" },
+      "accent-deep": { "role": "primary", "displayName": "Char Red", "canonical": "#99201d" },
+      "espresso": { "role": "tertiary", "displayName": "Espresso Shell", "canonical": "#1d1209" },
+      "tueste": { "role": "tertiary", "displayName": "Roast Amber", "canonical": "#8c4b21" },
+      "crema": { "role": "tertiary", "displayName": "Crema Gold", "canonical": "#c8813c" }
+    },
+    "typographyMeta": {
+      "hero-display": { "displayName": "Hero Display", "purpose": "Headline punchline only, always in Sign Red." },
+      "display": { "displayName": "Display", "purpose": "Section h2 headings, uppercase." },
+      "body": { "displayName": "Body", "purpose": "Supporting copy, capped near 34-42ch." },
+      "label": { "displayName": "Label", "purpose": "Nav links, eyebrows, bylines, button text." }
+    },
+    "shadows": [
+      { "name": "sheet-elevation", "value": "0 32px 80px -24px rgba(0,0,0,0.9)", "purpose": "Demo-explainer sheet only; the one surface that must read as physically above the page." },
+      { "name": "photo-drop", "value": "drop-shadow(0 54px 70px rgba(0,0,0,0.7))", "purpose": "Hero cup cutout only, to separate it from the shader behind it." }
+    ],
+    "motion": [
+      { "name": "ease-out-expo", "value": "cubic-bezier(0.16, 1, 0.3, 1)", "purpose": "Default entrance/exit easing across GSAP and Motion timelines." }
+    ],
+    "breakpoints": [
+      { "name": "sm", "value": "640px" },
+      { "name": "lg", "value": "1024px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Filled pill CTA, the page's one dominant action per view.",
+      "html": "<button class=\"ds-btn-primary\">Reservar</button>",
+      "css": ".ds-btn-primary { display: inline-flex; align-items: center; justify-content: center; gap: 8px; white-space: nowrap; border-radius: 9999px; padding: 14px 28px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.02em; font-size: 14px; background: #cc2a26; color: #ffffff; border: none; transition: transform 0.2s cubic-bezier(0.16,1,0.3,1), background-color 0.2s cubic-bezier(0.16,1,0.3,1); } .ds-btn-primary:hover { background: #99201d; } .ds-btn-primary:active { transform: translateY(1px); } .ds-btn-primary:focus-visible { outline: 2px solid #cc2a26; outline-offset: 3px; }"
+    },
+    {
+      "name": "Ghost Button",
+      "kind": "button",
+      "refersTo": "button-ghost",
+      "description": "Outline pill CTA, secondary action alongside a primary.",
+      "html": "<button class=\"ds-btn-ghost\">Ver la carta</button>",
+      "css": ".ds-btn-ghost { display: inline-flex; align-items: center; justify-content: center; gap: 8px; white-space: nowrap; border-radius: 9999px; padding: 14px 28px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.02em; font-size: 14px; background: rgba(11,11,12,0.4); backdrop-filter: blur(6px); color: #f5f2ee; border: 1px solid #26262b; transition: border-color 0.2s cubic-bezier(0.16,1,0.3,1), background-color 0.2s cubic-bezier(0.16,1,0.3,1); } .ds-btn-ghost:hover { border-color: #a8a29b; background: #1b1b1f; } .ds-btn-ghost:active { transform: translateY(1px); } .ds-btn-ghost:focus-visible { outline: 2px solid #cc2a26; outline-offset: 3px; }"
+    },
+    {
+      "name": "Selectable Card",
+      "kind": "card",
+      "refersTo": "card",
+      "description": "Locale/list card with a resting and an active (selected) state.",
+      "html": "<div class=\"ds-card ds-card--active\"><span class=\"ds-card-title\">Palermo Soho</span><span class=\"ds-card-body\">Costa Rica 5546</span></div>",
+      "css": ".ds-card { border-radius: 20px; border: 1px solid #26262b; background: #131316; padding: 24px; transition: border-color 0.3s, background-color 0.3s; } .ds-card--active { border-color: #cc2a26; background: #1b1b1f; } .ds-card-title { display: block; font-family: 'Anton', 'Arial Narrow', sans-serif; font-size: 24px; line-height: 0.95; letter-spacing: -0.01em; text-transform: uppercase; color: #f5f2ee; } .ds-card-body { display: block; margin-top: 8px; font-size: 14px; color: #a8a29b; }"
+    },
+    {
+      "name": "Nav Bar",
+      "kind": "nav",
+      "refersTo": "nav",
+      "description": "Fixed header, transparent at rest, opaque once scrolled.",
+      "html": "<header class=\"ds-nav ds-nav--opaque\"><span class=\"ds-nav-brand\">Cafetería</span><nav class=\"ds-nav-links\"><a href=\"#\">Carta</a><a href=\"#\">Nosotros</a></nav><button class=\"ds-btn-primary\">Reservar</button></header>",
+      "css": ".ds-nav { display: flex; align-items: center; justify-content: space-between; gap: 16px; height: 68px; padding: 0 40px; border-bottom: 1px solid transparent; transition: background-color 0.3s, border-color 0.3s; } .ds-nav--opaque { background: rgba(11,11,12,0.9); backdrop-filter: blur(20px); border-bottom-color: #26262b; } .ds-nav-brand { font-family: 'Anton', 'Arial Narrow', sans-serif; font-size: 19px; text-transform: uppercase; letter-spacing: -0.01em; color: #f5f2ee; } .ds-nav-links { display: flex; gap: 32px; } .ds-nav-links a { font-size: 13px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: #a8a29b; text-decoration: none; transition: color 0.2s; } .ds-nav-links a:hover { color: #f5f2ee; }"
+    },
+    {
+      "name": "Demo Sheet",
+      "kind": "custom",
+      "description": "Signature bottom-sheet/modal, the one component with real elevation and a voice break.",
+      "html": "<div class=\"ds-sheet-backdrop\"><div class=\"ds-sheet\"><h2 class=\"ds-sheet-title\">Este bot&oacute;n ser&iacute;a tuyo</h2><p class=\"ds-sheet-body\">En tu sitio abre WhatsApp con tu n&uacute;mero y el mensaje ya escrito.</p></div></div>",
+      "css": ".ds-sheet-backdrop { position: fixed; inset: 0; background: rgba(11,11,12,0.85); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; } .ds-sheet { max-width: 520px; width: 100%; border-radius: 20px; border: 1px solid #26262b; background: #131316; padding: 32px; box-shadow: 0 32px 80px -24px rgba(0,0,0,0.9); } .ds-sheet-title { font-family: 'Anton', 'Arial Narrow', sans-serif; font-size: 32px; line-height: 1; letter-spacing: -0.01em; text-transform: uppercase; color: #f5f2ee; max-width: 16ch; } .ds-sheet-body { margin-top: 16px; font-size: 14px; line-height: 1.6; color: #a8a29b; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The After-Dark Roastery",
+    "overview": "A specialty-coffee counter at closing time: matte black room, one neon-red sign doing all the talking, and a warm halogen halo around the espresso machine where the real color lives. Everything else in the room stays out of that light — text is porcelain and ash, surfaces are graphite, and the only saturated color left is the sign itself.\n\nThe page is built to be mistaken for a real business's site, so the aesthetic philosophy is confidence over decoration: one dominant accent used sparingly, a cartel-style display face for anything that needs to shout, warm unretouched photography for anything that needs to prove the coffee is real, and a grain overlay that reads as light through steam rather than as a filter. Nothing about the system announces \"template\" — every rule below exists because a specific measured problem (a contrast ratio, a line-height collision, a sticky-scroll edge case) forced it, not because it looked nice in isolation.\n\nConfirmed rejection: no inverted/light sections anywhere in the scroll. The black is total; a white section would break the room.",
+    "keyCharacteristics": [
+      "Matte black stage, single red sign, warm photography as the only other color",
+      "Cartel/menu-board display type (Anton) against a quiet grotesque body face",
+      "Flat by default — depth comes from tonal layering and hairlines, not shadows",
+      "Two shapes only: pill for anything you can press, 20px card radius for anything you look at",
+      "Porteño specificity in every string of copy, never generic café language"
+    ],
+    "rules": [
+      { "name": "The One Sign Rule", "body": "Sign Red is the only saturated color the interface ever puts a decision behind. If a second saturated hue starts carrying UI meaning, it competes with the sign and both lose.", "section": "colors" },
+      { "name": "The Faint-Is-Not-Text Rule", "body": "Spent Grounds falls short of AA for text. Anything carrying information belongs in Ash Taupe, never Spent Grounds.", "section": "colors" },
+      { "name": "The Hero-Only Rule", "body": "Espresso Shell, Roast Amber, and Crema Gold are photo-derived atmosphere confined to the hero shader and halo. No control, body text, or border ever uses them.", "section": "colors" },
+      { "name": "The Two-Tempo Headline Rule", "body": "Any headline pairing a setup line with a punchline sets the punchline at more than double the setup's size, in Sign Red.", "section": "typography" },
+      { "name": "The 0.96 Rule", "body": "Anton's cap-height overshoots a 0.9 line-box enough to clip an accented capital into the line above. 0.96 line-height is the measured floor for legible multi-line display headings.", "section": "typography" },
+      { "name": "The Flat-By-Default Rule", "body": "A card at rest never casts a shadow; depth reads from which of the three tonal planes it sits on.", "section": "elevation" },
+      { "name": "The Two-Shape Rule", "body": "Pill for anything interactive, 20px card radius for anything you look at. No third radius.", "section": "shapes" }
+    ],
+    "dos": [
+      "Do keep Sign Red to the same rarity as a real neon sign — buttons, one headline punchline per section, selected states.",
+      "Do use Neon Red instead of the base accent for any red text or icon sitting on a photo or on black.",
+      "Do build depth with the void → concrete → raised tonal stack and a hairline border, not a shadow.",
+      "Do keep every headline in Anton, uppercase, at 0.96 line-height on anything that wraps to more than one line.",
+      "Do write copy with named streets and concrete porteño detail."
+    ],
+    "donts": [
+      "Don't let Espresso Shell / Roast Amber / Crema Gold leave the hero shader and halo.",
+      "Don't put informational text in Spent Grounds — it measures below AA for text; use Ash Taupe.",
+      "Don't invert a section to a light background. The black is total.",
+      "Don't give a resting card a shadow, or under-weight the demo sheet's shadow — it needs to read as physically above the page.",
+      "Don't introduce a third corner radius. Interactive is pill, content is 20px, nothing else."
+    ]
+  }
+}
