@@ -113,7 +113,7 @@ design pass rather than protected:
 ## Evidence on Hand
 
 **Real:** the photography in `src/media/`, mapped through `src/lib/media.js`;
-the hero cutout at `public/taza-hero.png`; the coordinates in
+the hero photo at `public/hero-cafe.jpg`; the coordinates in
 `src/lib/locales.js`; the README's own documentation.
 
 **Fictional — must not be presented as fact or expanded into new claims:**
@@ -123,14 +123,14 @@ metrics. Do not invent client names, review counts, awards, or traffic numbers.
 
 **Known asset debt** (from the README, unresolved):
 
-- `taza-hero.png` is 350×350 and is displayed up to 680 px — 1.94× its real
-  size, and the cutout softens at that scale. It is the LCP element. The fix is
-  the same cutout at 1400 px, transparent, tightly cropped.
+- `public/hero-cafe.jpg` (the LCP element) is a duplicate of
+  `filtrado_v60.jpg`, reused because it's the only photo on hand with the
+  hero's warm, hand-pouring mood — but it means the same image appears twice
+  on the page (hero and the Carta grid). Wants a dedicated horizontal shot.
 - `espresso_doble.jpg` carries a visible `www.CBstore.eu` watermark and shows
   milk being poured, not an espresso. It must be replaced before this is shown
   to a prospect.
 - `int_horizontal.jpg` is 735×490 and runs full-bleed; it wants ~2400 px.
-- Loose coffee-bean cutouts (3–4 PNGs, ~300 px, transparent) do not exist yet.
 - The scroll-stack photos are vertical and crop hard at full-bleed width; any
   replacement must keep its subject centered.
 

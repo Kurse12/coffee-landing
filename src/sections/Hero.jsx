@@ -3,31 +3,23 @@ import { useReducedMotion } from 'motion/react'
 import { WhatsappLogo } from '@phosphor-icons/react'
 import Button from '../components/Button'
 import { useDemo } from '../lib/demo'
-import FondoCrema from '../components/FondoCrema'
 import { gsap } from '../lib/gsap'
 import { MEDIA } from '../lib/media'
 import { scrollToId } from '../lib/useSmoothScroll'
 
 /*
-  Hero de imagen grande. La taza recortada ocupa el alto util de la ventana y el
-  titular se lee en dos tiempos: una linea corta en blanco que entra, y el remate
-  en rojo al doble de cuerpo. El peso visual esta repartido entre foto y tipo,
-  no entre columnas iguales.
+  Hero a dos paneles: la foto ocupa la mitad izquierda (o el tope, en movil) y
+  el titular vive solo, sobre negro plano, en la mitad derecha. El titular
+  sigue leyendose en dos tiempos -- linea blanca que presenta, remate en rojo
+  al doble de cuerpo -- pero ahora el remate cae sobre void puro en vez de
+  sobre el velo de una foto, que es lo que le sigue permitiendo quedar en el
+  acento base (ver --color-accent en index.css) sin caer bajo AA.
 
-  Cuatro capas anidadas, una propiedad por capa, para que las animaciones no se
-  pisen entre si:
-    .hero-media    entrada, opacity + scale + rotate
-    .hero-parallax scroll, yPercent
-    .hero-float    loop infinito, y
-    img            estatica
-
-  Los cuatro motivos:
-   1. Entrada de la taza: es el objeto protagonista, entra ultima y sola.
-   2. Lineas del titular subiendo desde su mascara: fija el orden de lectura.
-   3. Flotacion: unico loop perpetuo de la pagina. Le da peso fisico al recorte,
-      que si no queda pegado como una calcomania.
-   4. Parallax al salir: la taza sube mas lento que el texto, avisa que hay
-      recorrido sin necesidad de poner un cartel de "scroll".
+  Dos capas, una propiedad cada una:
+    .hero-media   scroll, yPercent (parallax) + opacity de entrada
+    .hero-line    entrada, yPercent por linea (mascara)
+  Sin loop perpetuo: la taza flotante desaparecio con el recorte PNG, y esta
+  composicion no tiene un objeto recortado que necesite peso fisico propio.
 */
 export default function Hero() {
   const root = useRef(null)
@@ -37,37 +29,20 @@ export default function Hero() {
   useEffect(() => {
     if (reduce) return
     const ctx = gsap.context(() => {
+      // Zoom fijo antes de animar nada: es el margen que el parallax de mas
+      // abajo necesita para moverse sin destapar un borde vacio contra el
+      // overflow-hidden del panel.
+      gsap.set('.hero-media', { scale: 1.12 })
+
       const tl = gsap.timeline({ defaults: { ease: 'expo.out' } })
 
-      tl.from('.hero-halo', { scale: 0.6, opacity: 0, duration: 1.6 })
-        .from(
-          '.hero-media',
-          { yPercent: 14, scale: 0.88, rotate: -6, opacity: 0, duration: 1.5 },
-          0.1,
-        )
-        .from('.hero-line > span', { yPercent: 115, duration: 1.1, stagger: 0.1 }, 0.25)
-        .from('.hero-cta', { y: 14, opacity: 0, duration: 0.8, stagger: 0.08 }, 0.75)
-        // La flotacion arranca recien cuando la taza termino de acomodarse.
-        .to(
-          '.hero-float',
-          { y: -16, duration: 2.8, ease: 'sine.inOut', repeat: -1, yoyo: true },
-          '>-0.3',
-        )
+      tl.from('.hero-media', { opacity: 0, duration: 1.3 })
+        .from('.hero-line > span', { yPercent: 115, duration: 1.1, stagger: 0.1 }, 0.3)
+        .from('.hero-sub', { y: 14, opacity: 0, duration: 0.8 }, 0.7)
+        .from('.hero-cta', { y: 14, opacity: 0, duration: 0.8, stagger: 0.08 }, 0.8)
 
-      gsap.to('.hero-parallax', {
-        yPercent: -16,
-        ease: 'none',
-        scrollTrigger: {
-          trigger: root.current,
-          start: 'top top',
-          end: 'bottom top',
-          scrub: true,
-        },
-      })
-
-      gsap.to('.hero-copy', {
-        yPercent: -26,
-        opacity: 0.15,
+      gsap.to('.hero-media', {
+        yPercent: -6,
         ease: 'none',
         scrollTrigger: {
           trigger: root.current,
@@ -85,104 +60,45 @@ export default function Hero() {
     <section
       id="inicio"
       ref={root}
-      className="relative flex min-h-[100dvh] items-center overflow-hidden pt-20 pb-14 lg:pt-24 lg:pb-16"
+      className="relative flex min-h-[100dvh] flex-col overflow-hidden lg:grid lg:grid-cols-2"
     >
-      <FondoCrema />
-
-      {/*
-        Capa de textura tipografica, el equivalente propio a las garabateadas de
-        tiza del fondo de la referencia: da algo que mirar en el negro sin pelear
-        con el contenido. Va por encima del velo para que se vea, y a una
-        opacidad tan baja que se lee como marca de agua, no como texto.
-        Las dos palabras viven del lado de la foto; la columna derecha queda
-        limpia para el titular.
-      */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0 hidden overflow-hidden select-none lg:block"
-      >
-        <span className="display-xl absolute top-[6%] -left-[3%] text-[17vw] text-transparent opacity-[0.06] [-webkit-text-stroke:1.5px_var(--color-ink)]">
-          Tostado
-        </span>
-        <span className="display-xl absolute bottom-[4%] left-[18%] text-[13vw] text-transparent opacity-[0.05] [-webkit-text-stroke:1.5px_var(--color-accent)]">
-          Cookies
-        </span>
+      <div className="relative h-[46vh] w-full overflow-hidden lg:h-full">
+        <div className="hero-media absolute inset-0">
+          <img
+            src={MEDIA.hero}
+            alt="Café filtrado en V60: agua cayendo sobre el molido, con vapor subiendo"
+            fetchPriority="high"
+            width={736}
+            height={1104}
+            className="photo-treat size-full object-cover"
+          />
+        </div>
+        {/* Costura hacia el panel negro: abajo en movil (la foto termina y
+            sigue el bloque de texto), a la derecha en desktop (donde linda
+            con la columna de texto). Sutil a proposito -- la referencia corta
+            limpio, esto solo evita que el borde se lea como un recorte
+            accidental. */}
+        <div className="pointer-events-none absolute inset-0 bg-linear-to-t from-void/55 to-transparent lg:bg-linear-to-r lg:from-transparent lg:to-void/70" />
       </div>
 
-      <div className="relative mx-auto grid w-full max-w-[1400px] grid-cols-1 items-center gap-8 px-5 lg:grid-cols-[1.05fr_1fr] lg:gap-12 lg:px-10">
-        <div className="relative order-1 flex justify-center lg:order-none">
-          {/* Foco detras del recorte: es lo que despega la taza del fondo y
-              evita que se lea como pegada encima. Va en crema y no en el
-              acento, que es lo que llevaba cuando el fondo era rojo: sobre los
-              marrones del shader un halo rojo se lee sucio, y ademas gastaria
-              el acento en algo que no es una accion.
-
-              La opacidad baja de 22 a 12 en el mismo movimiento, y no es gusto:
-              el halo se pinta ENCIMA del velo de legibilidad, asi que el velo
-              no lo atenua, y con 800 px de ancho mas 120 de blur invade la
-              columna del titular. La crema tiene casi el doble de luminancia
-              que el rojo que llevaba antes, asi que a igual opacidad el titular
-              rojo caia debajo de 3:1. Medido, no estimado. */}
-          <div
-            aria-hidden
-            className="hero-halo pointer-events-none absolute top-1/2 left-1/2 aspect-square w-[min(125%,800px)] -translate-x-1/2 -translate-y-1/2 rounded-full bg-crema/12 blur-[120px]"
-          />
-
-          {/*
-            El ancho se mide contra la altura de la ventana y no contra la
-            columna: es lo que mantiene la foto grande sin empujar los CTA fuera
-            del primer viewport. El tope en px existe porque el PNG es de 350
-            px de lado y estirarlo mas alla de eso ya se nota blando.
-          */}
-          <div className="hero-parallax relative w-full max-w-[min(330px,38vh)] sm:max-w-[min(460px,50vh)] lg:max-w-[min(680px,76vh)]">
-            <div className="hero-media">
-              <div className="hero-float">
-                <img
-                  src={MEDIA.taza}
-                  alt="Taza de flat white con arte en la leche, servida en plato"
-                  fetchPriority="high"
-                  width={350}
-                  height={350}
-                  className="w-full [filter:brightness(1.02)_contrast(1.04)_drop-shadow(0_54px_70px_rgba(0,0,0,0.7))]"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/*
-          Centrado en movil, donde el bloque ocupa el ancho completo y alinear a
-          la izquierda le deja un vacio raro a la derecha. En desktop vuelve a la
-          izquierda, que es lo que sostiene el split asimetrico con la foto.
-        */}
-        <div className="hero-copy order-2 text-center lg:order-none lg:text-left">
-          {/*
-            Dos tiempos, no dos lineas iguales: la primera presenta y la segunda
-            remata en rojo, a mas del doble de cuerpo.
-
-            El termino en vw de cada clamp es agresivo a proposito. Antes las dos
-            lineas quedaban clavadas en su valor minimo en cualquier telefono,
-            porque el vw nunca llegaba a superarlo, y por eso el titular se veia
-            chico justo donde tenia que gritar. Los topes en rem siguen
-            protegiendo el desktop.
-          */}
+      <div className="relative flex flex-1 items-center bg-void px-5 py-14 text-center lg:px-16 lg:py-0 lg:text-left">
+        <div className="relative mx-auto max-w-[560px] lg:mx-0">
           <h1 className="display-xl">
             <span className="hero-line line-mask block text-[clamp(1.7rem,7.5vw,3.1rem)]">
               <span className="block">Caf&eacute; tostado</span>
             </span>
-            <span className="hero-line line-mask mt-1 block text-[clamp(3.6rem,17vw,8rem)] text-accent">
+            <span className="hero-line line-mask mt-1 block text-[clamp(3.6rem,13vw,6.4rem)] text-accent">
               <span className="block">ac&aacute; nom&aacute;s</span>
             </span>
           </h1>
 
-          {/*
-            Una sola accion dominante, y que sea la que la pagina quiere que
-            pase. Antes habia dos CTA del mismo peso ("Ver la carta" y "Donde
-            estamos") y ninguno era el objetivo: los dos navegaban a otra
-            seccion, asi que el primer viewport no ofrecia nada que cerrara
-            nada. Reservar es lo unico que convierte, y ahora esta arriba de
-            todo en vez de a trece pantallas de scroll.
-          */}
+          <p className="hero-sub mx-auto mt-6 max-w-[46ch] text-ink-soft lg:mx-0">
+            Tostamos los martes, ac&aacute; mismo en Palermo. Lo que ped&iacute;s
+            hoy sali&oacute; del tambor hace d&iacute;as, no hace meses.
+          </p>
+
+          {/* Una sola accion dominante: Reservar es lo unico que convierte.
+              Ver la carta acompaña en ghost, sin pelearle el peso. */}
           <div className="mt-8 flex flex-wrap items-center justify-center gap-3 lg:mt-10 lg:justify-start">
             <Button className="hero-cta" onClick={() => abrir('whatsapp')}>
               <WhatsappLogo size={18} weight="fill" />

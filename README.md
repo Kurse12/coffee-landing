@@ -192,13 +192,13 @@ debajo del pliegue.
 ## Fotos
 
 Los archivos viven en `src/media/` y se mapean a la página desde
-`src/lib/media.js`. La excepción es la taza del hero, que está en `public/`
+`src/lib/media.js`. La excepción es la foto del hero, que está en `public/`
 porque es el elemento LCP y necesita una ruta estable para el `preload` de
 `index.html`.
 
 | Clave | Archivo | Dónde aparece |
 |---|---|---|
-| `taza` | `public/taza-hero.png` | Hero (recorte PNG animado) |
+| `hero` | `public/hero-cafe.jpg` | Panel izquierdo del hero (copia de `filtrado_v60`) |
 | `origen` | `interior.jpg` | Círculo de la sección Nosotros |
 | `carta[0..4]` | `espresso_doble` · `flat_white` · `filtrado_v60` · `cookie_choco` · `medialuna` | Recorrido horizontal de la carta |
 | `stack.*` | `tostamos_martes` · `descanso_72hs` · `filtrado_pedido` | Una por tarjeta del scroll-stack, en ese orden |
@@ -214,18 +214,11 @@ desatura: la comida pierde.
 
 ### Pendientes de fotografía
 
-- **`taza-hero.png` mide 350 x 350, y es lo primero que se ve.** El hero la
-  estira hasta 680 px de lado, o sea 1,94 veces su tamaño real. Ese tamaño es el
-  que hace falta para que el producto ocupe el 70% del alto de pantalla, que es
-  la proporción que le da presencia al hero, pero a ese aumento el recorte se
-  ablanda. **Es el pendiente de mayor impacto de todo el proyecto:** hace falta
-  el mismo recorte exportado a 1400 px de lado, con fondo transparente y sin
-  margen sobrante alrededor de la taza. El tope está en
-  `max-w-[min(680px,76vh)]` en `Hero.jsx`.
-- **Recortes de granos de café sueltos, 3 o 4, en PNG con transparencia**, de
-  unos 300 px cada uno. Es lo que falta para el efecto de la referencia, donde
-  los pistachos vuelan fuera de la cookie y rompen la caja del producto. Sin
-  ellos el hero tiene composición correcta pero nada que sugiera movimiento.
+- **`public/hero-cafe.jpg` es una copia de `filtrado_v60.jpg`, no una toma
+  propia del hero.** Sirve porque es la única foto del banco con el mood de la
+  referencia (mano sirviendo, vapor, tonos cálidos), pero repite la imagen que
+  ya usa `carta[2]`. El pendiente es una toma horizontal exclusiva para el
+  hero, a 1600 px de ancho como mínimo.
 - **`int_horizontal.jpg`** mide 735 x 490, y en la banda de cierre va a sangre
   sobre todo el ancho de pantalla. En un monitor grande se amplía casi al doble.
   El velo oscuro y el zoom corto lo disimulan, pero la misma toma en 2400 px de

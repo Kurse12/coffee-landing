@@ -24,12 +24,14 @@ import salon from '../media/int_horizontal.jpg'
 
 export const MEDIA = {
   /*
-    PNG recortado con transparencia. Va suelto sobre el fondo, sin mascara.
-    Vive en public/ y no en media/ a proposito: es el elemento LCP y necesita
-    una ruta estable para el <link rel="preload"> de index.html. Si se cambia el
-    archivo, hay que cambiar el nombre en los dos lugares.
+    JPG del hero (panel izquierdo, a sangre). Vive en public/ y no en media/ a
+    proposito, igual que antes con la taza: es el elemento LCP y necesita una
+    ruta estable para el <link rel="preload"> de index.html. Si se cambia el
+    archivo, hay que cambiar el nombre en los dos lugares. Duplicado del mismo
+    archivo que usa carta[2] (filtrado_v60): a proposito, es la unica foto del
+    banco que sostiene el mood de la referencia (mano sirviendo, vapor, calido).
   */
-  taza: '/taza-hero.png',
+  hero: '/hero-cafe.jpg',
   /* 1:1 tras recorte circular. */
   origen: interior,
   /*
