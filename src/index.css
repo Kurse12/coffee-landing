@@ -189,11 +189,19 @@
   }
 }
 
-/* Grano: pseudo-elemento fijo, pointer-events none. Nunca sobre un contenedor
-   que scrollea, para no forzar repaints continuos de GPU. */
+/* Grano: pseudo-elemento absolute (no fixed) sobre el wrapper de pagina
+   completa, pointer-events none. Era `position: fixed` para no forzar
+   repaints continuos de GPU al scrollear, pero un overlay fixed a pantalla
+   completa tiene que reanclarse contra el visual viewport cada vez que la
+   barra de Chrome en Android se esconde o aparece durante el scroll, y ese
+   reanclado en vivo es donde Chrome tira frames: el tile de ruido queda mal
+   compuesto un instante y se ve como una mancha gris/negra que se corre con
+   el dedo hasta que el scroll se suelta. Absolute sobre `.grain` (que ya
+   envuelve toda la pagina) cubre el mismo alto sin depender del viewport
+   visual, asi que no hay nada que reanclar. */
 .grain::after {
   content: '';
-  position: fixed;
+  position: absolute;
   inset: 0;
   z-index: 60;
   pointer-events: none;
