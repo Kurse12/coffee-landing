@@ -58,9 +58,9 @@ export default function Hero() {
     <section
       id="inicio"
       ref={root}
-      className="relative flex min-h-[100dvh] flex-col overflow-hidden lg:grid lg:grid-cols-2"
+      className="relative flex min-h-[100svh] flex-col overflow-hidden lg:grid lg:grid-cols-2"
     >
-      <div className="relative h-[46vh] w-full overflow-hidden lg:h-full">
+      <div className="relative h-[34vh] w-full overflow-hidden lg:h-full">
         <div className="hero-media absolute inset-0">
           <img
             src={MEDIA.hero}
@@ -79,7 +79,7 @@ export default function Hero() {
         <div className="pointer-events-none absolute inset-0 bg-linear-to-t from-void/55 to-transparent lg:bg-linear-to-r lg:from-transparent lg:to-void/70" />
       </div>
 
-      <div className="relative flex flex-1 items-center bg-void px-5 py-14 text-center lg:px-16 lg:py-0 lg:text-left">
+      <div className="relative flex flex-1 items-center bg-void px-5 py-8 text-center lg:px-16 lg:py-0 lg:text-left">
         <div className="relative mx-auto max-w-[560px] lg:mx-0">
           <h1 className="display-xl">
             <span className="hero-line line-mask block text-[clamp(1.7rem,7.5vw,3.1rem)]">
@@ -90,7 +90,7 @@ export default function Hero() {
             </span>
           </h1>
 
-          <p className="hero-sub mx-auto mt-6 max-w-[46ch] text-ink-soft lg:mx-0">
+          <p className="hero-sub mx-auto mt-4 max-w-[46ch] text-ink-soft lg:mx-0 lg:mt-6">
             Tostamos los martes, ac&aacute; mismo en Palermo. Lo que ped&iacute;s
             hoy sali&oacute; del tambor hace d&iacute;as, no hace meses.
           </p>
@@ -105,7 +105,7 @@ export default function Hero() {
               que es donde esa misma accion ya rompe personaje a proposito
               (ver el comentario en Cierre.jsx) -- despues de que el visitante
               tuvo con que decidir si le gusto. */}
-          <div className="mt-8 flex flex-wrap items-center justify-center gap-3 lg:mt-10 lg:justify-start">
+          <div className="mt-6 flex flex-wrap items-center justify-center gap-3 lg:mt-10 lg:justify-start">
             <Button className="hero-cta" onClick={() => scrollToId('cierre')}>
               <WhatsappLogo size={18} weight="fill" />
               Reservar

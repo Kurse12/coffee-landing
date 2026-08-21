@@ -112,12 +112,21 @@ export default function Ritual() {
       <div>
         {PASOS.map(({ id, titulo, texto, Icon, foto, alt, destacado }) => (
           <div key={id} className="stack-card">
-            {/* 78dvh en movil, no 100: tres tarjetas a pantalla completa en fila,
+            {/* 78svh en movil, no 100: tres tarjetas a pantalla completa en fila,
                 con poco texto cada una, eran el tramo mas largo de scroll forzado
                 de la pagina justo antes de Locales/Voces, que son las secciones
                 que arman el caso para escribir. En desktop se mantiene el sangrado
-                completo porque ahi el layout tiene mas aire para sostenerlo. */}
-            <div className="stack-inner relative flex min-h-[78dvh] origin-top items-center overflow-hidden rounded-t-card lg:min-h-[100dvh]">
+                completo porque ahi el layout tiene mas aire para sostenerlo.
+
+                svh y no dvh: esta tarjeta es sticky y GSAP le anima scale por
+                scroll. dvh cambia en cada frame mientras la barra de Chrome se
+                esconde o aparece, y esa reflow en vivo contra un elemento sticky
+                con transform + overflow-hidden deja un fotograma sin pintar en
+                el borde de la foto -- un hueco que solo se corrige cuando el
+                scroll se frena y el navegador termina de asentar el alto. svh
+                es el alto minimo garantizado (con la barra visible) y no
+                cambia durante el gesto, asi que no hay nada que reflowear. */}
+            <div className="stack-inner relative flex min-h-[78svh] origin-top items-center overflow-hidden rounded-t-card lg:min-h-[100svh]">
               <img
                 src={foto}
                 alt={alt}
