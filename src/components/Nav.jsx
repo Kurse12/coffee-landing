@@ -1,9 +1,8 @@
 import { useEffect, useState } from 'react'
 import { AnimatePresence, motion, useMotionValueEvent, useScroll } from 'motion/react'
-import { Coffee, InstagramLogo, List, TiktokLogo, WhatsappLogo, X } from '@phosphor-icons/react'
+import { Coffee, List, WhatsappLogo, X } from '@phosphor-icons/react'
 import Button from './Button'
 import { lockScroll, scrollToId } from '../lib/useSmoothScroll'
-import { useDemo } from '../lib/demo'
 
 const LINKS = [
   { id: 'carta', label: 'Carta' },
@@ -12,18 +11,7 @@ const LINKS = [
   { id: 'voces', label: 'Voces' },
 ]
 
-/*
-  Los perfiles de la cafeteria no existen, asi que estos iconos no son enlaces:
-  abren la hoja que explica que harian en el sitio del cliente. Como dejaron de
-  navegar, dejan de ser <a> y pasan a <button>, que es lo que ahora hacen.
-*/
-const SOCIALS = [
-  { label: 'Instagram', Icon: InstagramLogo },
-  { label: 'TikTok', Icon: TiktokLogo },
-]
-
 export default function Nav() {
-  const { abrir } = useDemo()
   const [scrolleado, setScrolleado] = useState(false)
   const [open, setOpen] = useState(false)
   const { scrollY } = useScroll()
@@ -87,7 +75,7 @@ export default function Nav() {
           aria-label="Ir al inicio"
         >
           <Coffee size={26} weight="fill" className="shrink-0 text-accent-soft" />
-          <span className="font-display text-[19px] leading-none tracking-tight uppercase">
+          <span className="font-display text-xl leading-none tracking-tight uppercase">
             Cafeter&iacute;a
           </span>
         </button>
@@ -112,25 +100,17 @@ export default function Nav() {
           {/* La visibilidad va en el envoltorio: `hidden` sobre el Button pelea
               contra el `inline-flex` de su clase base y pierde, porque quien
               gana lo decide el orden en la hoja de estilos y no el del atributo. */}
+          {/* Baja a Cierre en vez de abrir la hoja-demo desde aca: el header es
+              fijo, visible desde el primer frame igual que el hero, asi que
+              sufre el mismo problema si es el primer tap disponible el que
+              revela el demo. */}
           <div className="hidden lg:block">
-            <Button size="sm" onClick={() => abrir('whatsapp')}>
+            <Button size="sm" onClick={() => go('cierre')}>
               <WhatsappLogo size={16} weight="fill" />
               Reservar
             </Button>
           </div>
 
-          <div className="hidden items-center gap-1 sm:flex">
-            {SOCIALS.map(({ label, Icon }) => (
-              <button
-                key={label}
-                onClick={() => abrir('redes')}
-                aria-label={`${label} de la cafetería (demo)`}
-                className="grid size-11 place-items-center rounded-full border border-hairline text-ink-soft transition-colors hover:border-accent hover:text-ink"
-              >
-                <Icon size={17} />
-              </button>
-            ))}
-          </div>
           <button
             onClick={() => setOpen((v) => !v)}
             aria-label={open ? 'Cerrar menú' : 'Abrir menú'}
@@ -167,38 +147,14 @@ export default function Nav() {
             </ul>
 
             {/* La pill de la barra solo entra en lg, asi que en el panel la
-                accion vuelve a ancho completo. */}
+                accion vuelve a ancho completo. Mismo motivo que la version de
+                escritorio para bajar a Cierre en vez de abrir la hoja-demo:
+                ver el comentario de mas arriba. */}
             <div className="px-4 pb-4 sm:px-5 lg:hidden">
-              <Button
-                className="w-full"
-                onClick={() => {
-                  setOpen(false)
-                  lockScroll(false)
-                  abrir('whatsapp')
-                }}
-              >
+              <Button className="w-full" onClick={() => go('cierre')}>
                 <WhatsappLogo size={18} weight="fill" />
                 Reservar
               </Button>
-            </div>
-
-            {/* Debajo de sm los sociales salen de la barra por falta de ancho,
-                asi que reaparecen aca adentro. */}
-            <div className="flex gap-2 border-t border-hairline px-4 py-4 sm:hidden">
-              {SOCIALS.map(({ label, Icon }) => (
-                <button
-                  key={label}
-                  onClick={() => {
-                    setOpen(false)
-                    lockScroll(false)
-                    abrir('redes')
-                  }}
-                  aria-label={`${label} de la cafetería (demo)`}
-                  className="grid size-11 place-items-center rounded-full border border-hairline text-ink-soft"
-                >
-                  <Icon size={17} />
-                </button>
-              ))}
             </div>
           </motion.div>
         )}

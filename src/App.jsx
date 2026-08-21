@@ -5,7 +5,7 @@ import { DemoProvider } from './components/HojaDemo'
 import Hero from './sections/Hero'
 import Marquee from './sections/Marquee'
 import Origen from './sections/Origen'
-import Carta from './sections/Carta'
+import CartaCompleta from './sections/CartaCompleta'
 import Ritual from './sections/Ritual'
 import Locales from './sections/Locales'
 import Voces from './sections/Voces'
@@ -53,7 +53,7 @@ export default function App() {
             <Hero />
             <Marquee />
             <Origen />
-            <Carta />
+            <CartaCompleta />
             <Ritual />
             <Locales />
             <Voces />

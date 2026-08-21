@@ -24,7 +24,7 @@ typography:
     letterSpacing: "-0.01em"
   hero-display:
     fontFamily: "Anton, Arial Narrow, sans-serif"
-    fontSize: "clamp(3.6rem, 17vw, 8rem)"
+    fontSize: "clamp(3.6rem, 13vw, 6.4rem)"
     fontWeight: 400
     lineHeight: 0.96
     letterSpacing: "-0.01em"
@@ -75,9 +75,9 @@ components:
 **Creative North Star: "The After-Dark Roastery"**
 
 A specialty-coffee counter at closing time: matte black room, one neon-red
-sign doing all the talking, and a warm halogen halo around the espresso
-machine where the real color lives. Everything else in the room stays out of
-that light — text is porcelain and ash, surfaces are graphite, and the only
+sign doing all the talking, and warm, unretouched photography carrying
+whatever remaining color the room has. Everything else in the room stays out
+of that light — text is porcelain and ash, surfaces are graphite, and the only
 saturated color left is the sign itself.
 
 The page is built to be mistaken for a real business's site, so the aesthetic
@@ -136,14 +136,17 @@ sign in a dark room — everywhere it appears, it means "act here."
   Depth is layered void → concrete → raised, edged with steam lines, never
   drawn with a shadow.
 
-### Hero-only accents (do not use in UI)
+### Hero-only accents (reserved, currently dormant)
 - **Espresso Shell** (`#1d1209`), **Roast Amber** (`#8c4b21`), **Crema Gold**
-  (`#c8813c`): pulled from the hero cup photo, and confined to the hero's
-  background shader and the halo glow behind the cup. **The Hero-Only Rule.**
-  No control, no body text, no border ever uses these three. They used to
-  bleed into the hero background by inheritance from an earlier shader and
-  diluted the sign red's meaning everywhere; keeping them hero-only is what
-  makes the sign red mean something again.
+  (`#c8813c`): pulled from the hero cup photo for a WebGL shader hero
+  (`src/components/Crema.jsx`/`FondoCrema.jsx`) that is built but not wired
+  into `Hero.jsx` — the shipped hero is a static photo panel with GSAP
+  parallax, and none of these three render anywhere on the live page right
+  now. **The Hero-Only Rule.** If the shader is ever reintroduced, these stay
+  confined to it and its halo glow; no control, no body text, no border uses
+  them. They used to bleed into the hero background by inheritance from that
+  same shader and diluted the sign red's meaning everywhere — dormant is the
+  safer default unless the shader ships again.
 
 ### Named Rules
 **The One Sign Rule.** Sign Red is the only saturated color the interface
@@ -161,7 +164,7 @@ the same split as a chalkboard special next to a printed price list. Anton
 never runs longer than a few words; Outfit carries every sentence.
 
 ### Hierarchy
-- **Hero display** (400, `clamp(3.6rem, 17vw, 8rem)`, line-height 0.96): the
+- **Hero display** (400, `clamp(3.6rem, 13vw, 6.4rem)`, line-height 0.96): the
   headline's second line only — the punchline, always in Sign Red, always
   more than double the size of the line above it.
 - **Display** (400, `clamp(2.4rem, 6vw, 4.6rem)`, line-height 0.96): every
@@ -207,8 +210,10 @@ casts a shadow; the eye reads depth from which of the three tones it sits on.
   one deliberate exception, reserved for the demo-explainer sheet (HojaDemo)
   because that surface must read as physically above the page, not just a
   different tone of it.
-- **Photo drop** (`drop-shadow(0 54px 70px rgba(0,0,0,0.7))`): the hero cup
-  only, to separate the cutout from the shader behind it.
+
+(A **Photo drop** cutout shadow existed for the shader-hero's cup cutout; it
+shipped with the same shelved `Crema`/`FondoCrema` hero as the dormant accent
+trio above and is not currently in use.)
 
 ## Shapes
 
@@ -280,8 +285,8 @@ one interruption the rest of the system avoids.
   difference between this and a generic café template.
 
 ### Don't:
-- **Don't** let Espresso Shell / Roast Amber / Crema Gold leave the hero
-  shader and halo. They're photo-derived atmosphere, not UI color.
+- **Don't** reach for Espresso Shell / Roast Amber / Crema Gold. They're
+  dormant, scoped to a shelved hero shader, not general UI color — see Colors.
 - **Don't** put informational text in Spent Grounds (`ink-faint`) — it
   measures below AA for text; use Ash Taupe.
 - **Don't** invert a section to a light background. The black is total.

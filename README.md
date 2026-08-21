@@ -18,8 +18,8 @@ Las tres librerías hacen cosas distintas y no se pisan:
 | Librería | Para qué | Dónde |
 |---|---|---|
 | **Lenis** | Suavizado del scroll de toda la página | `src/lib/useSmoothScroll.js` |
-| **GSAP + ScrollTrigger** | Pin, scrub y timelines de entrada | Hero, Marquee, Origen, Carta, Ritual, Cierre |
-| **Motion** | Entradas al viewport, menú mobile y hoja de demo | `Reveal`, Nav, `HojaDemo`, Locales, Voces |
+| **GSAP + ScrollTrigger** | Pin, scrub y timelines de entrada | Hero, Marquee, Origen, Ritual, Cierre |
+| **Motion** | Entradas al viewport, menú mobile, hoja de demo y el filtro por categoría de la carta | `Reveal`, Nav, `HojaDemo`, Locales, Voces, `CartaCompleta` |
 | **Three.js + R3F** | Shader del fondo del hero | `Crema`, `FondoCrema` |
 
 Lenis y ScrollTrigger están casados en `useSmoothScroll`: Lenis pasa a ser la
@@ -34,23 +34,14 @@ Todo lo que se mueve pasa por `useReducedMotion()`. Con
 ScrollTrigger, el scroll-stack deja de apilarse y el mapa salta al local elegido
 en vez de volar.
 
-En la carta ese fallback no es cosmético sino obligatorio: la sección se clava a
-pantalla completa con el track recortado, así que sin pin el contenido quedaría
-inalcanzable. Bajo reduced-motion pasa a ser un carrusel nativo con snap.
-
-El riel de avance de la carta funciona en los dos modos, y no es decoración: con
-el pin puesto la página deja de bajar y el recorrido se va de costado, así que
-sin una señal no se distingue de algo roto. Con pin lo alimenta el `onUpdate` del
-mismo ScrollTrigger que mueve el track; bajo reduced-motion, el `scroll` del
-carrusel nativo, que además lleva la barra oculta.
-
 ## Secciones
 
 1. **Hero** · imagen grande y titular en dos tiempos, con entrada enmascarada y parallax al salir
 2. **Marquee** · banda cinética a velocidad constante, independiente del scroll
 3. **Origen** · foto fija (sticky) con el relato corriendo al lado y anillo de texto que gira
-4. **Carta** · recorrido horizontal con pin en todos los anchos, mobile incluido,
-   con un riel de avance abajo a la izquierda
+4. **Carta** · grid estático de dieciocho productos en cuatro categorías
+   (Café, Sin cafeína, Pastelería, Para picar), con tabs de filtro animados por
+   Motion.
 5. **Ritual** · scroll-stack a sangre, tres tarjetas a pantalla completa que se apilan
 6. **Locales** · lista + mapa Leaflet, se seleccionan entre sí
 7. **Voces** · testimonios sin caja, con anchos y desfases distintos
@@ -200,7 +191,7 @@ porque es el elemento LCP y necesita una ruta estable para el `preload` de
 |---|---|---|
 | `hero` | `public/hero-cafe.jpg` | Panel izquierdo del hero (copia de `filtrado_v60`) |
 | `origen` | `interior.jpg` | Círculo de la sección Nosotros |
-| `carta[0..4]` | `espresso_doble` · `flat_white` · `filtrado_v60` · `cookie_choco` · `medialuna` | Recorrido horizontal de la carta |
+| `menu.*` | dieciocho archivos locales en `src/media/` (ver lista abajo) | Los dieciocho productos de la carta, en `CartaCompleta.jsx` |
 | `stack.*` | `tostamos_martes` · `descanso_72hs` · `filtrado_pedido` | Una por tarjeta del scroll-stack, en ese orden |
 | `cierre` | `int_horizontal.jpg` | Banda de cierre, a sangre |
 | — | `public/og-cafeteria.jpg` | Preview del link en WhatsApp. Es una captura del hero real, 2400 x 1260 (la proporción 1,91:1 que piden las tarjetas); regenerarla si cambia el hero |
@@ -208,16 +199,32 @@ porque es el elemento LCP y necesita una ruta estable para el `preload` de
 `cookies2.jpg` y `vaso.jpg` quedaron sin uso al recortar el ritual de cinco
 tarjetas a tres. Siguen en `src/media/` por si vuelven.
 
+Las catorce fotos que antes eran hotlinks a `images.unsplash.com` ya se
+bajaron a `src/media/` (`espresso_doble.jpg`, `cortado.jpg`, `latte.jpg`,
+`cold_brew.jpg`, `te_verde.jpg`, `chai_latte.jpg`, `matcha_latte.jpg`,
+`manzanilla.jpg`, `budin_limon.jpg`, `alfajor.jpg`, `scon.jpg`,
+`tostado.jpg`, `bagel.jpg`, `tabla_quesos.jpg`) y pasan por el pipeline de
+Vite como el resto: hash en el nombre, cache larga, sin depender de un host
+externo. Se bajaron a 1200×1500 (el recorte 4:5 que ya usaba el hotlink),
+mismo tamaño fijo que ya usan `flat_white.jpg`/`filtrado_v60.jpg`/etc. — sin
+`srcSet` de anchos múltiples, para no introducir un patrón nuevo que el
+resto de las fotos locales no tiene.
+
 La utilidad `.photo-treat` (en `src/index.css`) les aplica un ajuste mínimo de
 brillo y contraste para que no floten demasiado claras contra el negro. No
 desatura: la comida pierde.
 
 ### Pendientes de fotografía
 
+- **Las catorce fotos bajadas de Unsplash** (ver arriba) no están curadas a
+  mano, una por una, contra el archivo real: elegidas por el texto alternativo
+  que ofrece la búsqueda de Unsplash, así que alguna puede no calzar del todo
+  con el producto (el té verde y la manzanilla, por ejemplo, son tazas de té
+  genéricas, no fotos del té específico).
 - **`public/hero-cafe.jpg` es una copia de `filtrado_v60.jpg`, no una toma
   propia del hero.** Sirve porque es la única foto del banco con el mood de la
   referencia (mano sirviendo, vapor, tonos cálidos), pero repite la imagen que
-  ya usa `carta[2]`. El pendiente es una toma horizontal exclusiva para el
+  ya usa `menu.v60`. El pendiente es una toma horizontal exclusiva para el
   hero, a 1600 px de ancho como mínimo.
 - **`int_horizontal.jpg`** mide 735 x 490, y en la banda de cierre va a sangre
   sobre todo el ancho de pantalla. En un monitor grande se amplía casi al doble.

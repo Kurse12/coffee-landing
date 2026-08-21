@@ -2,7 +2,6 @@ import { useEffect, useRef } from 'react'
 import { useReducedMotion } from 'motion/react'
 import { WhatsappLogo } from '@phosphor-icons/react'
 import Button from '../components/Button'
-import { useDemo } from '../lib/demo'
 import { gsap } from '../lib/gsap'
 import { MEDIA } from '../lib/media'
 import { scrollToId } from '../lib/useSmoothScroll'
@@ -24,7 +23,6 @@ import { scrollToId } from '../lib/useSmoothScroll'
 export default function Hero() {
   const root = useRef(null)
   const reduce = useReducedMotion()
-  const { abrir } = useDemo()
 
   useEffect(() => {
     if (reduce) return
@@ -98,9 +96,17 @@ export default function Hero() {
           </p>
 
           {/* Una sola accion dominante: Reservar es lo unico que convierte.
-              Ver la carta acompaña en ghost, sin pelearle el peso. */}
+              Ver la carta acompaña en ghost, sin pelearle el peso.
+
+              Reservar no abre la hoja-demo desde aca: es la primera accion
+              disponible en toda la pagina, antes de Origen, la carta o Voces,
+              y abrir de entrada "esto es un demo" ahi le gana a cualquier
+              argumento que el resto del scroll todavia no hizo. Baja a Cierre,
+              que es donde esa misma accion ya rompe personaje a proposito
+              (ver el comentario en Cierre.jsx) -- despues de que el visitante
+              tuvo con que decidir si le gusto. */}
           <div className="mt-8 flex flex-wrap items-center justify-center gap-3 lg:mt-10 lg:justify-start">
-            <Button className="hero-cta" onClick={() => abrir('whatsapp')}>
+            <Button className="hero-cta" onClick={() => scrollToId('cierre')}>
               <WhatsappLogo size={18} weight="fill" />
               Reservar
             </Button>

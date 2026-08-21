@@ -1,0 +1,20 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "design-system-font-size",
+        "value": "11px",
+        "createdAt": "2026-08-21T17:21:13.983Z",
+        "reason": "Leaflet map-attribution text, legally mandatory to stay legible; bumped from 10px to 11px for readability (see src/index.css comment above .leaflet-control-attribution)"
+      },
+      {
+        "rule": "design-system-radius",
+        "value": "12px",
+        "createdAt": "2026-08-21T17:21:14.054Z",
+        "reason": "Leaflet popup chrome (third-party library DOM, not a native card/pill); the 20px card radius reads oversized on a small map popup"
+      }
+    ]
+  }
+}

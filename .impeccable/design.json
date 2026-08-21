@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-08-12T00:00:00.000Z",
+  "generatedAt": "2026-08-21T00:00:00.000Z",
   "title": "Design System: Cafetería",
   "extensions": {
     "colorMeta": {
@@ -26,7 +26,7 @@
     },
     "shadows": [
       { "name": "sheet-elevation", "value": "0 32px 80px -24px rgba(0,0,0,0.9)", "purpose": "Demo-explainer sheet only; the one surface that must read as physically above the page." },
-      { "name": "photo-drop", "value": "drop-shadow(0 54px 70px rgba(0,0,0,0.7))", "purpose": "Hero cup cutout only, to separate it from the shader behind it." }
+      { "name": "photo-drop", "value": "drop-shadow(0 54px 70px rgba(0,0,0,0.7))", "purpose": "Dormant: shipped with the shelved Crema/FondoCrema shader hero, not currently in use." }
     ],
     "motion": [
       { "name": "ease-out-expo", "value": "cubic-bezier(0.16, 1, 0.3, 1)", "purpose": "Default entrance/exit easing across GSAP and Motion timelines." }
@@ -67,7 +67,7 @@
       "refersTo": "nav",
       "description": "Fixed header, transparent at rest, opaque once scrolled.",
       "html": "<header class=\"ds-nav ds-nav--opaque\"><span class=\"ds-nav-brand\">Cafetería</span><nav class=\"ds-nav-links\"><a href=\"#\">Carta</a><a href=\"#\">Nosotros</a></nav><button class=\"ds-btn-primary\">Reservar</button></header>",
-      "css": ".ds-nav { display: flex; align-items: center; justify-content: space-between; gap: 16px; height: 68px; padding: 0 40px; border-bottom: 1px solid transparent; transition: background-color 0.3s, border-color 0.3s; } .ds-nav--opaque { background: rgba(11,11,12,0.9); backdrop-filter: blur(20px); border-bottom-color: #26262b; } .ds-nav-brand { font-family: 'Anton', 'Arial Narrow', sans-serif; font-size: 19px; text-transform: uppercase; letter-spacing: -0.01em; color: #f5f2ee; } .ds-nav-links { display: flex; gap: 32px; } .ds-nav-links a { font-size: 13px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: #a8a29b; text-decoration: none; transition: color 0.2s; } .ds-nav-links a:hover { color: #f5f2ee; }"
+      "css": ".ds-nav { display: flex; align-items: center; justify-content: space-between; gap: 16px; height: 68px; padding: 0 40px; border-bottom: 1px solid transparent; transition: background-color 0.3s, border-color 0.3s; } .ds-nav--opaque { background: rgba(11,11,12,0.9); backdrop-filter: blur(20px); border-bottom-color: #26262b; } .ds-nav-brand { font-family: 'Anton', 'Arial Narrow', sans-serif; font-size: 20px; text-transform: uppercase; letter-spacing: -0.01em; color: #f5f2ee; } .ds-nav-links { display: flex; gap: 32px; } .ds-nav-links a { font-size: 13px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: #a8a29b; text-decoration: none; transition: color 0.2s; } .ds-nav-links a:hover { color: #f5f2ee; }"
     },
     {
       "name": "Demo Sheet",
@@ -79,7 +79,7 @@
   ],
   "narrative": {
     "northStar": "The After-Dark Roastery",
-    "overview": "A specialty-coffee counter at closing time: matte black room, one neon-red sign doing all the talking, and a warm halogen halo around the espresso machine where the real color lives. Everything else in the room stays out of that light — text is porcelain and ash, surfaces are graphite, and the only saturated color left is the sign itself.\n\nThe page is built to be mistaken for a real business's site, so the aesthetic philosophy is confidence over decoration: one dominant accent used sparingly, a cartel-style display face for anything that needs to shout, warm unretouched photography for anything that needs to prove the coffee is real, and a grain overlay that reads as light through steam rather than as a filter. Nothing about the system announces \"template\" — every rule below exists because a specific measured problem (a contrast ratio, a line-height collision, a sticky-scroll edge case) forced it, not because it looked nice in isolation.\n\nConfirmed rejection: no inverted/light sections anywhere in the scroll. The black is total; a white section would break the room.",
+    "overview": "A specialty-coffee counter at closing time: matte black room, one neon-red sign doing all the talking, and warm, unretouched photography carrying whatever remaining color the room has. Everything else in the room stays out of that light — text is porcelain and ash, surfaces are graphite, and the only saturated color left is the sign itself.\n\nThe page is built to be mistaken for a real business's site, so the aesthetic philosophy is confidence over decoration: one dominant accent used sparingly, a cartel-style display face for anything that needs to shout, warm unretouched photography for anything that needs to prove the coffee is real, and a grain overlay that reads as light through steam rather than as a filter. Nothing about the system announces \"template\" — every rule below exists because a specific measured problem (a contrast ratio, a line-height collision, a sticky-scroll edge case) forced it, not because it looked nice in isolation.\n\nConfirmed rejection: no inverted/light sections anywhere in the scroll. The black is total; a white section would break the room.",
     "keyCharacteristics": [
       "Matte black stage, single red sign, warm photography as the only other color",
       "Cartel/menu-board display type (Anton) against a quiet grotesque body face",
@@ -90,7 +90,7 @@
     "rules": [
       { "name": "The One Sign Rule", "body": "Sign Red is the only saturated color the interface ever puts a decision behind. If a second saturated hue starts carrying UI meaning, it competes with the sign and both lose.", "section": "colors" },
       { "name": "The Faint-Is-Not-Text Rule", "body": "Spent Grounds falls short of AA for text. Anything carrying information belongs in Ash Taupe, never Spent Grounds.", "section": "colors" },
-      { "name": "The Hero-Only Rule", "body": "Espresso Shell, Roast Amber, and Crema Gold are photo-derived atmosphere confined to the hero shader and halo. No control, body text, or border ever uses them.", "section": "colors" },
+      { "name": "The Hero-Only Rule", "body": "Espresso Shell, Roast Amber, and Crema Gold are reserved for a shelved hero-shader treatment (Crema.jsx/FondoCrema.jsx, currently unwired) and are dormant until it ships. No control, body text, or border ever uses them.", "section": "colors" },
       { "name": "The Two-Tempo Headline Rule", "body": "Any headline pairing a setup line with a punchline sets the punchline at more than double the setup's size, in Sign Red.", "section": "typography" },
       { "name": "The 0.96 Rule", "body": "Anton's cap-height overshoots a 0.9 line-box enough to clip an accented capital into the line above. 0.96 line-height is the measured floor for legible multi-line display headings.", "section": "typography" },
       { "name": "The Flat-By-Default Rule", "body": "A card at rest never casts a shadow; depth reads from which of the three tonal planes it sits on.", "section": "elevation" },
@@ -104,7 +104,7 @@
       "Do write copy with named streets and concrete porteño detail."
     ],
     "donts": [
-      "Don't let Espresso Shell / Roast Amber / Crema Gold leave the hero shader and halo.",
+      "Don't reach for Espresso Shell / Roast Amber / Crema Gold. They're dormant, scoped to a shelved hero shader, not general UI color.",
       "Don't put informational text in Spent Grounds — it measures below AA for text; use Ash Taupe.",
       "Don't invert a section to a light background. The black is total.",
       "Don't give a resting card a shadow, or under-weight the demo sheet's shadow — it needs to read as physically above the page.",

@@ -45,7 +45,7 @@ export default function Voces() {
               delay={i * 0.08}
               className={`border-t border-hairline pt-7 ${v.ancho} ${v.offset}`}
             >
-              <blockquote className="text-xl leading-snug text-ink lg:text-[1.4rem]">
+              <blockquote className="text-xl leading-snug text-ink lg:text-2xl">
                 &ldquo;{v.texto}&rdquo;
               </blockquote>
               <footer className="mt-6">

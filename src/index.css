@@ -122,7 +122,10 @@
   :focus-visible {
     outline: 2px solid var(--color-accent);
     outline-offset: 3px;
-    border-radius: 4px;
+    /* Universal focus-ring corner, not a content/pill shape from the
+       Two-Shape Rule -- it has to fit whatever element gets focus, including
+       ones smaller than either scale step. */
+    border-radius: 4px; /* impeccable-disable-line design-system-radius */
   }
 }
 
@@ -227,12 +230,6 @@
 }
 .leaflet-control-zoom a:hover {
   background: var(--color-accent) !important;
-}
-.leaflet-popup-content-wrapper,
-.leaflet-popup-tip {
-  background: var(--color-surface-2) !important;
-  color: var(--color-ink) !important;
-  border-radius: 12px;
 }
 
 @media (prefers-reduced-motion: reduce) {

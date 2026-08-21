@@ -4,12 +4,25 @@
   (hash en el nombre y cache larga). Para cambiar una foto alcanza con pisar el
   archivo respetando el aspect ratio que indica cada comentario.
 */
+import alfajor from '../media/alfajor.jpg'
+import bagel from '../media/bagel.jpg'
+import budinLimon from '../media/budin_limon.jpg'
+import chaiLatte from '../media/chai_latte.jpg'
+import coldBrew from '../media/cold_brew.jpg'
 import cookie from '../media/cookie_choco.jpg'
+import cortado from '../media/cortado.jpg'
 import espresso from '../media/espresso_doble.jpg'
 import v60 from '../media/filtrado_v60.jpg'
 import flatWhite from '../media/flat_white.jpg'
 import interior from '../media/interior.jpg'
+import latte from '../media/latte.jpg'
+import manzanilla from '../media/manzanilla.jpg'
+import matchaLatte from '../media/matcha_latte.jpg'
 import medialuna from '../media/medialuna.jpg'
+import scon from '../media/scon.jpg'
+import tablaQuesos from '../media/tabla_quesos.jpg'
+import teVerde from '../media/te_verde.jpg'
+import tostado from '../media/tostado.jpg'
 
 /*
   Tres, no cinco: el ritual paso de cinco tarjetas a tres. Los archivos
@@ -35,13 +48,32 @@ export const MEDIA = {
   /* 1:1 tras recorte circular. */
   origen: interior,
   /*
-    Un producto por foto, y el orden sigue al de ITEMS en Carta. Las relaciones
-    de los archivos van de 1:1 a 2:3: la tarjeta fija el alto y object-cover
-    recorta, asi que lo unico que hay que respetar al cambiar una es que el
-    producto quede centrado. Las medidas reales viven junto a cada item en
-    Carta.jsx, que es donde el navegador las necesita.
+    La carta (CartaCompleta.jsx), en el mismo orden en que aparecen sus ITEMS.
+    Las relaciones de los archivos van de 1:1 a 2:3: la tarjeta fija el alto y
+    object-cover recorta, asi que lo unico que hay que respetar al cambiar una
+    es que el producto quede centrado. Las medidas reales viven junto a cada
+    item en CartaCompleta.jsx, que es donde el navegador las necesita.
   */
-  carta: [espresso, flatWhite, v60, cookie, medialuna],
+  menu: {
+    espresso: { src: espresso },
+    cortado: { src: cortado },
+    flatWhite: { src: flatWhite },
+    latte: { src: latte },
+    v60: { src: v60 },
+    coldBrew: { src: coldBrew },
+    teVerde: { src: teVerde },
+    chaiLatte: { src: chaiLatte },
+    matchaLatte: { src: matchaLatte },
+    manzanilla: { src: manzanilla },
+    medialuna: { src: medialuna },
+    cookie: { src: cookie },
+    budinLimon: { src: budinLimon },
+    alfajor: { src: alfajor },
+    scon: { src: scon },
+    tostado: { src: tostado },
+    bagel: { src: bagel },
+    tablaQuesos: { src: tablaQuesos },
+  },
   /*
     Fondos del scroll-stack, uno por tarjeta. Van a sangre y a pantalla
     completa, con un velo oscuro encima, asi que lo que importa es que el sujeto

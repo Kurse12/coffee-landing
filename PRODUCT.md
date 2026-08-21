@@ -38,18 +38,18 @@ depth.
 
 What a neighboring coffee-shop demo could not truthfully copy:
 
-- **Four motion systems with separate, documented jobs and no collisions.**
+- **Three motion systems with separate, documented jobs and no collisions.**
   Lenis owns page scroll; GSAP/ScrollTrigger owns pin, scrub, and entry
-  timelines; Motion owns viewport entries and the mobile menu; Three.js/R3F owns
-  the hero shader only. GSAP and Motion never share a component. Lenis and
+  timelines; Motion owns viewport entries, the mobile menu, and the Carta
+  category-tab transitions. GSAP and Motion never share a component. Lenis and
   ScrollTrigger are bridged in `src/lib/useSmoothScroll.js` so pinned sections
-  stay in phase with smoothed scroll.
+  stay in phase with smoothed scroll. (A fourth system — a Three.js/R3F hero
+  shader, `src/components/Crema.jsx`/`FondoCrema.jsx` — was built and then
+  shelved; see Known asset debt. It is not part of the shipped page and
+  should not be described to a prospect as running.)
 - **Fallbacks that are functional rather than cosmetic.** Under
   `prefers-reduced-motion: reduce`, Lenis does not mount, no ScrollTrigger runs,
-  the scroll-stack stops stacking, and the map jumps instead of flying. In
-  Carta the fallback is load-bearing: the section pins full-screen with a
-  clipped track, so without pin the content would be unreachable — it becomes a
-  native snap carousel instead.
+  the scroll-stack stops stacking, and the map jumps instead of flying.
 - **Porteño specificity instead of stock-café generics.** Named streets, real
   neighborhoods, Argentine register, details with texture ("entran perros",
   "enchufes en todas las mesas").
@@ -70,7 +70,9 @@ What a neighboring coffee-shop demo could not truthfully copy:
 ## Capabilities and Constraints
 
 - **Sections, in order:** Hero, Marquee, Origen (Nosotros), Carta, Ritual,
-  Locales, Voces, Cierre. Single page.
+  Locales, Voces, Cierre. Single page. Carta (`CartaCompleta.jsx`) is the
+  full eighteen-item menu, grouped into four categories with price and
+  description per item, filterable by tab.
 - **No backend.** The footer notification form simulates its call in
   `Cierre.jsx`; the real POST would go there.
 - **No API keys or tokens anywhere.** The map uses CARTO dark tiles over
@@ -79,15 +81,13 @@ What a neighboring coffee-shop demo could not truthfully copy:
 - **Locales are a single source of truth.** `src/lib/locales.js` feeds the list,
   the pins, the Google Maps link, and the footer address line.
 - **Leaflet is lazy-loaded** (~156 kB, well below the fold).
-- **The hero shader mounts only while the hero is on screen** (via
-  IntersectionObserver) and unmounts on exit, so the rest of the page pays
-  nothing for it. `src/components/Silk.jsx` is vendored from React Bits with one
-  local change (`dpr` as a prop), marked `NOTA:` in the file — reapply it on any
-  upstream update.
-- **Open decision — contact path.** The page is sent as a standalone link but
-  currently offers no way to learn who built it or how to reach them. Since
-  contact is the success measure, this is a real gap. How it is handled — and
-  how much it may break character — is undecided.
+- **The hero is a static photo panel**, not a shader: `Hero.jsx` renders
+  `MEDIA.hero` full-bleed with GSAP scroll parallax on `.hero-media`. It does
+  not mount `Crema`/`FondoCrema` — see Known asset debt.
+- **Contact path — resolved via HojaDemo.** Every CTA that would otherwise
+  dead-end (Reservar, the social icons) opens `HojaDemo`, which names the real
+  author and offers a real WhatsApp/mail contact, both sourced from
+  `src/lib/autor.js`. This was an open decision; it now ships.
 - **Open decision — the name.** "Cafetería" is a placeholder, not a brand.
 
 ## Brand Commitments
@@ -98,17 +98,15 @@ What a neighboring coffee-shop demo could not truthfully copy:
   in Palermo and Recoleta. Named streets and concrete, human details. Do not
   neutralize this into international Spanish or generic café copy.
 - **The motion architecture as documented above.** The separation of concerns
-  between Lenis, GSAP, Motion, and Three.js is the thing being demonstrated.
-  Work that blurs those boundaries damages the point of the piece.
+  between Lenis, GSAP, and Motion is the thing being demonstrated. Work that
+  blurs those boundaries damages the point of the piece.
 
 **Incumbent but not declared binding** — currently true, revisable in a future
 design pass rather than protected:
 
 - The dark theme lock (black page, one red accent in three weights, no inverted
   sections), described in `src/index.css` as a brand decision.
-- Reduced-motion parity across every effect. Note that Carta's fallback is a
-  functional requirement regardless of whether parity is pursued elsewhere —
-  without it that section's content cannot be reached.
+- Reduced-motion parity across every effect.
 
 ## Evidence on Hand
 
@@ -126,13 +124,28 @@ metrics. Do not invent client names, review counts, awards, or traffic numbers.
 - `public/hero-cafe.jpg` (the LCP element) is a duplicate of
   `filtrado_v60.jpg`, reused because it's the only photo on hand with the
   hero's warm, hand-pouring mood — but it means the same image appears twice
-  on the page (hero and the Carta grid). Wants a dedicated horizontal shot.
-- `espresso_doble.jpg` carries a visible `www.CBstore.eu` watermark and shows
-  milk being poured, not an espresso. It must be replaced before this is shown
-  to a prospect.
+  on the page (hero and the Carta grid, as `menu.v60`). Wants a dedicated
+  horizontal shot.
 - `int_horizontal.jpg` is 735×490 and runs full-bleed; it wants ~2400 px.
 - The scroll-stack photos are vertical and crop hard at full-bleed width; any
   replacement must keep its subject centered.
+- **Fourteen photos in `CartaCompleta.jsx` (the menu section) are
+  hotlinked from `images.unsplash.com` rather than bundled through
+  `src/lib/media.js`'s normal Vite pipeline.** The dev environment that added
+  them had no outbound network access from its shell, so there was no way to
+  download and commit them as local files — see `src/lib/media.js` and the
+  README's Fotos section. They work, but depend on an external host, carry no
+  long cache, and weren't verified image-by-image against the product they
+  label (chosen from Unsplash's own alt text). Resolved as part of this
+  debt: the old `espresso_doble.jpg`, which carried a visible
+  `www.CBstore.eu` watermark and showed milk being poured rather than an
+  espresso, was replaced by one of these hotlinks.
+- **The hero shader (`src/components/Crema.jsx`/`FondoCrema.jsx`) is built but
+  unwired.** It was pulled from `Hero.jsx` in a refactor and nothing currently
+  imports either file; the Hero-Only accent colors it introduced (Espresso
+  Shell, Roast Amber, Crema Gold, in `DESIGN.md`) are consequently dormant.
+  Kept in the repo as a shelved option, not a bug — but it must not be
+  described in Positioning as something the shipped page runs.
 
 ## Product Principles
 

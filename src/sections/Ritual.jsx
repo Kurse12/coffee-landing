@@ -112,7 +112,12 @@ export default function Ritual() {
       <div>
         {PASOS.map(({ id, titulo, texto, Icon, foto, alt, destacado }) => (
           <div key={id} className="stack-card">
-            <div className="stack-inner relative flex min-h-[100dvh] origin-top items-center overflow-hidden rounded-t-card">
+            {/* 78dvh en movil, no 100: tres tarjetas a pantalla completa en fila,
+                con poco texto cada una, eran el tramo mas largo de scroll forzado
+                de la pagina justo antes de Locales/Voces, que son las secciones
+                que arman el caso para escribir. En desktop se mantiene el sangrado
+                completo porque ahi el layout tiene mas aire para sostenerlo. */}
+            <div className="stack-inner relative flex min-h-[78dvh] origin-top items-center overflow-hidden rounded-t-card lg:min-h-[100dvh]">
               <img
                 src={foto}
                 alt={alt}
